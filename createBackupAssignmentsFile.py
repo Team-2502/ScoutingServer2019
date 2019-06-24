@@ -2,11 +2,28 @@ import tbapy
 import random
 import os
 import json
+import pyrebase
+
+# File with functions which return info such as API keys and passwords
+import sensitiveInfo
 
 homeDir = os.path.expanduser('~')
 
+# Firebase setup
+pyrebase_config = {
+    "apiKey": sensitiveInfo.firebase_api_key(),
+    "authDomain": "offseasondds.firebaseapp.com",
+    "databaseURL": "https://offseasondds.firebaseio.com",
+    "storageBucket": "offseasondds.appspot.com",
+    "serviceAccount": os.path.join(homeDir, "ScoutingData/config/offseasondds-3695dd827748.json")
+}
+firebase = pyrebase.initialize_app(pyrebase_config)
+auth = firebase.auth()
+user = auth.sign_in_with_email_and_password(sensitiveInfo.firebase_email(), sensitiveInfo.firebase_password())
+database = firebase.database()
+
 # Setup for tbapy
-tba = tbapy.TBA('cCMyOGkTLJF1plYEKUQpOQO6CWeTeEgZKZu7fcjyqL7h1LuRa0Fj1hRN948oixC9')
+tba = tbapy.TBA(sensitiveInfo.tba_api_key())
 event = "2019dar"
 
 # Get a list of all qualifying matches at an event
@@ -58,3 +75,5 @@ with open(os.path.join(homeDir, 'ScoutingData/assignments/BackupAssignments.json
 with open(os.path.join(homeDir, 'ScoutingData/assignments/BackupAssignments.txt'), 'w') as f:
     f.write(json.dumps(full_assignments))
 
+# Upload assignments to Firebase
+database.child("assignments").child("BackupAssignments").set(json.dumps(full_assignments))
