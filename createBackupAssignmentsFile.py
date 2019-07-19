@@ -29,6 +29,7 @@ event = "2019dar"
 # Get a list of all qualifying matches at an event
 try:
     matches = [match for match in tba.event_matches(event, simple=True) if match['comp_level'] == 'qm']
+    print(matches[0])
 
 # TODO Make this except clause more specfic
 except:
@@ -36,6 +37,7 @@ except:
     exit(1)
 
 full_assignments = {}
+ds_order = ["Red 1", "Red 2", "Red 3", "Blue 1", "Blue 2", "Blue 3"]
 
 for match in matches:
     # Query TBA for info about each match
@@ -49,24 +51,12 @@ for match in matches:
     assignments = {}
     numScouts = 6
     scouts = ['scout' + str(x) for x in range(1, numScouts + 1)]
-    available_scouts = list(scouts)
 
     # Assign each scout to a team
-    for team in teams:
-        # Distribute scouts evenly among teams as possible
-        for x in range(int(numScouts / 6)):
-            chosen_scout = random.choice(available_scouts)
-            assignments[chosen_scout] = {'team': team, 'alliance': ('red' if team in redTeams else 'blue')}
-            available_scouts.remove(chosen_scout)
+    for i in range(len(scouts)):
+        assignments[scouts[i]] = {'team': teams[(i % 6)], 'alliance': (ds_order[(i % 6)])}
 
-    # For scouts that cannot be assigned evenly pick a random team to scout
-    extra_teams = random.sample(set(teams), numScouts % len(teams))
-    for team in extra_teams:
-        chosen_scout = random.choice(available_scouts)
-        assignments[chosen_scout] = {'team': team, 'alliance': ('red' if team in redTeams else 'blue')}
-        available_scouts.remove(chosen_scout)
-
-    full_assignments["match"+str(match_num)] = assignments
+    full_assignments["QM "+str(match_num)] = assignments
 
 # Save file as json and txt
 with open(os.path.join(homeDir, 'ScoutingData/assignments/BackupAssignments.json'), 'w') as f:
