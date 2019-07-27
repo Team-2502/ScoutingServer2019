@@ -13,7 +13,14 @@ import time
 
 # Serial number to human-readable device name
 DEVICE_NAMES = {
-    'G000L40763270NAL': 'Scout 1'
+    'G000L40763270NAL': 'Scout 1',
+    'G000L40763270V9A': 'Scout 2',
+    'G000L40763270WH5': 'RED 3',
+    'G000L40763270QKL': 'BLUE 1',
+    'G000L40763270NX9': 'BLUE 2',
+    'G000L40763270WLQ': 'BLUE 3',
+    'G000L40763270R0J': 'RED 2'
+
 }
 
 ASSIGNMENT_FILE_PATH = '/Users/64013459//ScoutingData/assignments/BackupAssignments.txt'
