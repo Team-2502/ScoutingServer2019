@@ -58,10 +58,10 @@ for match in matches:
     full_assignments["QM "+str(match_num)] = assignments
 
 # Save file as json and txt
-with open(os.path.join(homeDir, 'ScoutingData/assignments/BackupAssignments.json'), 'w') as f:
+with open(os.path.join(homeDir, 'ScoutingServer/assignments/BackupAssignments.json'), 'w') as f:
     json.dump(full_assignments, f)
 
-with open(os.path.join(homeDir, 'ScoutingData/assignments/BackupAssignments.txt'), 'w') as f:
+with open(os.path.join(homeDir, 'ScoutingServer/assignments/BackupAssignments.txt'), 'w') as f:
     f.write(json.dumps(full_assignments))
 
 # Upload assignments to Firebase

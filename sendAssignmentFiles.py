@@ -23,7 +23,7 @@ DEVICE_NAMES = {
 
 }
 
-ASSIGNMENT_FILE_PATH = '/Users/64013459//ScoutingData/assignments/BackupAssignments.txt'
+ASSIGNMENT_FILE_PATH = '/Users/64013459//ScoutingServer/assignments/BackupAssignments.txt'
 
 # List of devices to which 'assignments.txt' has already been sent
 DEVICES_WITH_FILE = []

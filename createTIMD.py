@@ -1,4 +1,9 @@
 import utils
+import sensitiveInfo
+
+import json
+import os
+import pyrebase
 
 TEMP_TIMD_COMP_KEYS = {
     'A': 'matchNumber',
@@ -21,7 +26,9 @@ TEMP_TIMD_COMP_KEYS = {
     'R': 'actualClimb',
     'S': 'attemptedClimb',
     'T': 'isDoubleClimb',
-    'U': 'isTripleClimb'
+    'U': 'isTripleClimb',
+    'V': 'assistedAnotherClimb',
+    'W': 'wasAssistedClimb'
 }
 
 TEMP_TIMD_COMP_VALUES = {
@@ -78,7 +85,6 @@ def decompress_timd(temp_timd):
     match_number = decompressed_header.get('matchNumber')
     decompressed_timeline = decompress_timeline(timeline)
     decompressed_timd = {'header': decompressed_header, 'timeline': decompressed_timeline, 'team_number': team_number, 'match_number': match_number}
-    print(decompressed_timd)
     return decompressed_timd
 
 
@@ -164,8 +170,6 @@ def calculate_calculated_data(decompressed_timd):
     calculated_data['cargoScoredLevel2'] = len(filter_timeline_actions(decompressed_timd, actionType='place', actionPiece='cargo', placeLevel='level2'))
     calculated_data['cargoScoredLevel3'] = len(filter_timeline_actions(decompressed_timd, actionType='place', actionPiece='cargo', placeLevel='level3'))
 
-    # calculated_data['timeIncap']
-
     calculated_data['cargoPlaceSuccessRate'] = percent_success_place(decompressed_timd, actionPiece='cargo')
     calculated_data['hatchPlaceSuccessRate'] = percent_success_place(decompressed_timd, actionPiece='hatch')
     calculated_data['cargoShipPlaceSuccessRate'] = percent_success_place(decompressed_timd, actionPlace='cargoShip')
@@ -174,45 +178,64 @@ def calculate_calculated_data(decompressed_timd):
     calculated_data['cargoIntakeSuccessRate'] = percent_success_intake(decompressed_timd, actionPiece='cargo')
     calculated_data['hatchIntakeSuccessRate'] = percent_success_intake(decompressed_timd, actionPiece='hatch')
 
+    intake_to_place_cycle_list = create_cycle_list(decompressed_timd, 'place', 'intake')
+
+    calculated_data['undefendedHatchAverageCycleTime'] = average_cycle_time(intake_to_place_cycle_list, actionPiece='hatch', wasDefended=False)
+    calculated_data['undefendedCargoAverageCycleTime'] = average_cycle_time(intake_to_place_cycle_list, actionPiece='cargo', wasDefended=False)
+    calculated_data['undefendedRocketAverageCycleTime'] = average_cycle_time(intake_to_place_cycle_list, actionPlace='rocket', wasDefended=False)
+    calculated_data['undefendedCargoShipAverageCycleTime'] = average_cycle_time(intake_to_place_cycle_list, actionPlace='cargoShip', wasDefended=False)
+    calculated_data['undefendedLevel3AverageCycleTime'] = average_cycle_time(intake_to_place_cycle_list, placeLevel='level3', wasDefended=False)
+
+    calculated_data['defendedHatchAverageCycleTime'] = average_cycle_time(intake_to_place_cycle_list, actionPiece='hatch', wasDefended=True)
+    calculated_data['defendedCargoAverageCycleTime'] = average_cycle_time(intake_to_place_cycle_list, actionPiece='cargo', wasDefended=True)
+    calculated_data['defendedRocketAverageCycleTime'] = average_cycle_time(intake_to_place_cycle_list, actionPlace='rocket', wasDefended=True)
+    calculated_data['defendedCargoShipAverageCycleTime'] = average_cycle_time(intake_to_place_cycle_list, actionPlace='cargoShip', wasDefended=True)
+    calculated_data['defendedLevel3AverageCycleTime'] = average_cycle_time(intake_to_place_cycle_list, placeLevel='level3', wasDefended=True)
+
+    calculated_data['trueOffensiveContribution'] = true_offensive_contribution(decompressed_timd)
+
+    incap_to_recap_cycle_list = create_cycle_list(decompressed_timd, 'incap', 'recap')
+    calculated_data['timeIncap'] = total_cycle_time(incap_to_recap_cycle_list)
+
+    defense_cycle_list = create_cycle_list(decompressed_timd, 'defense', 'offense')
+    calculated_data['timeDefending'] = total_cycle_time(defense_cycle_list)
+
+    return calculated_data
+
+
+def create_cycle_list(decompressed_timd, action1, action2):
     # Creates the cycle_list, a list of tuples where the intake is the
     # first item and the placement or drop is the second. This is used
     # when calculating cycle times.
     cycle_list = []
     for action in decompressed_timd.get('timeline', []):
-        if action.get('actionType') in ['intake', 'place']:
+        if action.get('actionType') in [action1, action2]:
             cycle_list.append(action)
 
     # There must be at least 2 actions to have a cycle.
     if len(cycle_list) > 1:
-        # If the first action in the list is a placement, it is a
-        # preload, which doesn't count when calculating cycle times.
-        if cycle_list[0].get('actionType') == 'place':
-            cycle_list.pop(0)
-        # If the last action in the list is an intake, it means the
-        # robot finished with a game object, in which the cycle was
-        # never completed.
-        if cycle_list[-1].get('actionType') == 'intake':
-            cycle_list.pop(-1)
+        if action1 == 'place' and action2 == 'intake':
+            # If the first action in the list is a placement, it is a
+            # preload, which doesn't count when calculating cycle times.
+            if cycle_list[0].get('actionType') == action1:
+                cycle_list.pop(0)
+            # If the last action in the list is an intake, it means the
+            # robot finished with a game object, in which the cycle was
+            # never completed.
+            if cycle_list[-1].get('actionType') == action2:
+                cycle_list.pop(-1)
         # [::2] are the even-indexed items of the list, [1::2] are the
         # odd-indexed items of the list. The python zip function puts
         # matching-index items from two lists into tuples.
         paired_cycle_list = list(zip(cycle_list[::2], cycle_list[1::2]))
+        return paired_cycle_list
+    return []
 
-        calculated_data['undefendedHatchAverageCycleTime'] = average_cycle_time(paired_cycle_list, actionPiece='hatch', wasDefended=False)
-        calculated_data['undefendedCargoAverageCycleTime'] = average_cycle_time(paired_cycle_list, actionPiece='cargo', wasDefended=False)
-        calculated_data['undefendedRocketAverageCycleTime'] = average_cycle_time(paired_cycle_list, actionPlace='rocket', wasDefended=False)
-        calculated_data['undefendedCargoShipAverageCycleTime'] = average_cycle_time(paired_cycle_list, actionPlace='cargoShip', wasDefended=False)
-        calculated_data['undefendedLevel3AverageCycleTime'] = average_cycle_time(paired_cycle_list, placeLevel='level3', wasDefended=False)
 
-        calculated_data['defendedHatchAverageCycleTime'] = average_cycle_time(paired_cycle_list, actionPiece='hatch', wasDefended=True)
-        calculated_data['defendedCargoAverageCycleTime'] = average_cycle_time(paired_cycle_list, actionPiece='cargo', wasDefended=True)
-        calculated_data['defendedRocketAverageCycleTime'] = average_cycle_time(paired_cycle_list, actionPlace='rocket', wasDefended=True)
-        calculated_data['defendedCargoShipAverageCycleTime'] = average_cycle_time(paired_cycle_list, actionPlace='cargoShip', wasDefended=True)
-        calculated_data['defendedLevel3AverageCycleTime'] = average_cycle_time(paired_cycle_list, placeLevel='level3', wasDefended=True)
-
-    calculated_data['trueOffensiveContribution'] = true_offensive_contribution(decompressed_timd)
-
-    return calculated_data
+def calculate_climb(decompressed_timd):
+    climb_action = filter_timeline_actions(decompressed_timd, actionType='climb')[0]
+    climb_action['climbSuccessful'] = (climb_action['attemptedClimb'] == climb_action['actualClimb'])
+    return climb_action
 
 
 def filter_timeline_actions(timd, **filters):
@@ -257,6 +280,9 @@ def percent_success_place(timd, **filters):
     successes = len(filter_timeline_actions(timd, **filters, actionType='place'))
     fails = len(filter_timeline_actions(timd, **filters, actionType='drop'))
 
+    if successes == 0:
+        return None
+
     return round(100 * (1 - (fails/successes)))
 
 
@@ -290,6 +316,29 @@ def average_cycle_time(cycle_list, **filters):
     return utils.avg(cycle_times, None)
 
 
+def total_cycle_time(cycle_list, **filters):
+    filtered_cycles = []
+    # For each cycle, if any of the specifications are not met, the
+    # loop breaks and moves on to the next cycle, but if all the
+    # specifications are met, the cycle is added to the filtered cycles.
+    for cycle in cycle_list:
+        for data_field, requirement in filters.items():
+            if cycle[1].get(data_field) != requirement:
+                break
+        # If all the requirements are met, the cycle is added to the
+        # (returned) filtered cycles.
+        else:
+            filtered_cycles.append(cycle)
+
+    cycle_times = []
+    for cycle in filtered_cycles:
+        # Subtracts the second time from the first because the time
+        # counts down in the timeline.
+        cycle_times.append(cycle[0].get('actionTime') -
+                           cycle[1].get('actionTime'))
+    return sum(cycle_times)
+
+
 def true_offensive_contribution(timd):
     total_contribution = 0
     if timd['header'].get('leftHab'):
@@ -318,10 +367,36 @@ def true_offensive_contribution(timd):
     return total_contribution
 
 
-def calculate_TIMD(compressed_timd):
+def calculate_TIMD(compressed_timd, timd_name):
+    homeDir = os.path.expanduser('~')
+
+    pyrebase_config = {
+        "apiKey": sensitiveInfo.firebase_api_key(),
+        "authDomain": "offseasondds.firebaseapp.com",
+        "databaseURL": "https://offseasondds.firebaseio.com",
+        "storageBucket": "offseasondds.appspot.com",
+        "serviceAccount": os.path.join(homeDir, "ScoutingServer/config/offseasondds-3695dd827748.json")
+    }
+
+    firebase = pyrebase.initialize_app(pyrebase_config)
+    database = firebase.database()
+
     decompressed_timd = decompress_timd(compressed_timd)
     decompressed_timd['calculated'] = calculate_calculated_data(decompressed_timd)
-    print("{" + "\n".join("{}: {}".format(k, v) for k, v in decompressed_timd["calculated"].items()) + "}")
+    decompressed_timd['climb'] = calculate_climb(decompressed_timd)
+    print(f'{timd_name} decompressed')
+
+    # Save data in local cache
+    if not os.path.exists(os.path.join(homeDir, 'ScoutingServer/cache/TIMDs')):
+        os.makedirs(os.path.join(homeDir, 'ScoutingServer/cache/TIMDs'))
+
+    with open(os.path.join(homeDir, f'ScoutingServer/cache/TIMDs/{timd_name}.json'), 'w') as file:
+        json.dump(decompressed_timd, file)
+    print(f'{timd_name} cached')
+
+    database.child("TIMDs").child(timd_name).set(decompressed_timd)
+    print(f'{timd_name} uploaded to Firebase')
 
 
-calculate_TIMD(very_cool_timd)
+if __name__ == '__main__':
+    calculate_TIMD(very_cool_timd, 'QM2-1114-a')

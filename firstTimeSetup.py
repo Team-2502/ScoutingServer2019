@@ -17,16 +17,17 @@ MACAddresses = {
     'scout6': '50:F5:DA:82:55:0E',
     'scout7': 'AC:63:BE:D9:BC:88'
 }
-# TODO Confirm that they are zeroes and not the letter O
 # TODO Remember to update if tablets are factory reset
 
-if not os.path.exists(os.path.join(homeDir, 'ScoutingData/config')):
-    os.makedirs(os.path.join(homeDir, 'ScoutingData/config'))
-if not os.path.exists(os.path.join(homeDir, 'ScoutingData/assignments')):
-    os.makedirs(os.path.join(homeDir, 'ScoutingData/assignments'))
+if not os.path.exists(os.path.join(homeDir, 'ScoutingServer/config')):
+    os.makedirs(os.path.join(homeDir, 'ScoutingServer/config'))
+if not os.path.exists(os.path.join(homeDir, 'ScoutingServer/assignments')):
+    os.makedirs(os.path.join(homeDir, 'ScoutingServer/assignments'))
+if not os.path.exists(os.path.join(homeDir, 'ScoutingServer/cache')):
+    os.makedirs(os.path.join(homeDir, 'ScoutingServer/cache'))
 
-with open(os.path.join(homeDir, 'ScoutingData/config/ScoutMACAddresses.json'), 'w') as f:
+with open(os.path.join(homeDir, 'ScoutingServer/config/ScoutMACAddresses.json'), 'w') as f:
     json.dump(MACAddresses, f)
 
-with open(os.path.join(homeDir, 'ScoutingData/config/SlackAPIKey.txt'), 'w') as f:
+with open(os.path.join(homeDir, 'ScoutingServer/config/SlackAPIKey.txt'), 'w') as f:
     f.write(slackAPIKey)
