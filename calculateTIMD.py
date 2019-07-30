@@ -63,8 +63,8 @@ TEMP_TIMD_COMP_VALUES = {
     'ac': 'incap',
     'ad': 'recap',
     'ae': 'climb',
-    'af': 'defenseStart',
-    'ag': 'defenseEnd',
+    'af': 'offense',
+    'ag': 'defense',
 }
 
 SCOUT_NAME_VALUES = {
@@ -289,6 +289,9 @@ def percent_success_place(timd, **filters):
 def percent_success_intake(timd, **filters):
     successes = len(filter_timeline_actions(timd, **filters, actionType='intake'))
     fails = len(filter_timeline_actions(timd, **filters, actionType='drop'))
+
+    if successes == 0:
+        return None
 
     return round(100 * (1 - (fails / successes)))
 
