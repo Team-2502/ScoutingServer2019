@@ -54,7 +54,9 @@ SD_DATA_FIELDS = {
 }
 
 PERCENT_SUCCESS_DATA_FIELDS = {
-    'cargoSuccessPlace': {'actionPiece': 'cargo'},
+    'cargoSuccessPlace': {
+        'actionPiece': 'cargo'
+    },
     'cargoSuccessPlaceDefended': {
         'actionPiece': 'cargo',
         'wasDefended': True,
@@ -65,15 +67,15 @@ PERCENT_SUCCESS_DATA_FIELDS = {
     },
     'cargoSuccessPlaceL1': {
         'actionPiece': 'cargo',
-        'placeLevel': 1,
+        'placeLevel': 'level1',
     },
     'cargoSuccessPlaceL2': {
         'actionPiece': 'cargo',
-        'placeLevel': 2,
+        'placeLevel': 'level2',
     },
     'cargoSuccessPlaceL3': {
         'actionPiece': 'cargo',
-        'placeLevel': 3,
+        'placeLevel': 'level3',
     },
     'cargoSuccessRocket': {
         'actionPiece': 'cargo',
@@ -96,15 +98,15 @@ PERCENT_SUCCESS_DATA_FIELDS = {
     },
     'hatchSuccessL1': {
         'actionPiece': 'hatch',
-        'placeLevel': 1,
+        'placeLevel': 'level1',
     },
     'hatchSuccessL2': {
         'actionPiece': 'hatch',
-        'placeLevel': 2,
+        'placeLevel': 'level2',
     },
     'hatchSuccessL3': {
         'actionPiece': 'hatch',
-        'placeLevel': 3,
+        'placeLevel': 'level3',
     },
     'hatchSuccessRocket': {
         'actionPiece': 'hatch',
@@ -164,11 +166,14 @@ def calculate_team(team_number):
 
     percentages = {}
     for success_data_field, filters in PERCENT_SUCCESS_DATA_FIELDS.items():
-        percentages[success_data_field] = utils.percent_success_place(utils.filter_timeline_actions(timds, **filters))
+        percentages[success_data_field] = utils.percent_success_place(timds, **filters)
 
     percentages['hatchPercentageOfCycles'] = sum([timd['calculated']['hatchesScored'] for timd in timds]) / sum([timd['calculated']['totalCycles'] for timd in timds]) if sum([timd['calculated']['totalCycles'] for timd in timds]) != 0 else 0
+    percentages['hatchPercentageOfCycles'] = round(100 * (1 - percentages['hatchPercentageOfCycles']))
     percentages['cargoPercentageOfCycles'] = sum([timd['calculated']['cargoScored'] for timd in timds]) / sum([timd['calculated']['totalCycles'] for timd in timds]) if sum([timd['calculated']['totalCycles'] for timd in timds]) != 0 else 0
+    percentages['cargoPercentageOfCycles'] = round(100 * (1 - percentages['cargoPercentageOfCycles']))
 
+    team['percentages'] = percentages
     # percent defense
     # percent incap
     # percent no show

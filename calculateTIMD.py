@@ -249,10 +249,10 @@ def percent_success_intake(timd, **filters):
     successes = len(utils.filter_timeline_actions([timd], **filters, actionType='intake'))
     fails = len(utils.filter_timeline_actions([timd], **filters, actionType='drop'))
 
-    if successes == 0:
+    if successes + fails == 0:
         return None
 
-    return round(100 * (1 - (fails / successes)))
+    return round(100 * (successes / (fails + successes)))
 
 
 def average_cycle_time(cycle_list, **filters):

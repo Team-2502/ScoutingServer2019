@@ -93,7 +93,7 @@ def percent_success_place(timds, **filters):
     successes = len(filter_timeline_actions([timd for timd in timds], **filters, actionType='place'))
     fails = len(filter_timeline_actions([timd for timd in timds], **filters, actionType='drop'))
 
-    if successes == 0:
+    if successes + fails == 0:
         return None
 
-    return round(100 * (1 - (fails/successes)))
+    return round(100 * (successes/(successes+fails)))
