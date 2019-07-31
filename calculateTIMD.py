@@ -5,6 +5,8 @@ import json
 import os
 import pyrebase
 
+from utils import percent_success_place
+
 TEMP_TIMD_COMP_KEYS = {
     'A': 'matchNumber',
     'B': 'teamNumber',
@@ -151,29 +153,32 @@ def decompress_action(action):
 def calculate_calculated_data(decompressed_timd):
     calculated_data = {}
 
-    calculated_data['cargoScored'] = len(filter_timeline_actions(decompressed_timd, actionType='place', actionPiece='cargo'))
-    calculated_data['hatchesScored'] = len(filter_timeline_actions(decompressed_timd, actionType='place', actionPiece='hatch'))
-    calculated_data['hatchesDropped'] = len(filter_timeline_actions(decompressed_timd, actionType='drop', actionPiece='hatch'))
-    calculated_data['cargoDropped'] = len(filter_timeline_actions(decompressed_timd, actionType='drop', actionPiece='cargo'))
-    calculated_data['cargoScoredSS'] = len(filter_timeline_actions(decompressed_timd, actionType='place', actionPiece='cargo', actionTime='sandstorm'))
-    calculated_data['hatchScoredSS'] = len(filter_timeline_actions(decompressed_timd, actionType='place', actionPiece='hatch', actionTime='sandstorm'))
-    calculated_data['cargoScoredTeleop'] = len(filter_timeline_actions(decompressed_timd, actionType='place', actionPiece='cargo', actionTime='teleop'))
-    calculated_data['hatchScoredTeleop'] = len(filter_timeline_actions(decompressed_timd, actionType='place', actionPiece='hatch', actionTime='teleop'))
-    calculated_data['hatchScoredRocket'] = len(filter_timeline_actions(decompressed_timd, actionType='place', actionPiece='hatch', actionPlace='rocket'))
-    calculated_data['hatchScoredCargoShip'] = len(filter_timeline_actions(decompressed_timd, actionType='place', actionPiece='hatch', actionPlace='cargoShip'))
-    calculated_data['hatchScoredLevel1'] = len(filter_timeline_actions(decompressed_timd, actionType='place', actionPiece='hatch', placeLevel='level1'))
-    calculated_data['hatchScoredLevel2'] = len(filter_timeline_actions(decompressed_timd, actionType='place', actionPiece='hatch', placeLevel='level2'))
-    calculated_data['hatchScoredLevel3'] = len(filter_timeline_actions(decompressed_timd, actionType='place', actionPiece='hatch', placeLevel='level3'))
-    calculated_data['cargoScoredRocket'] = len(filter_timeline_actions(decompressed_timd, actionType='place', actionPiece='cargo', actionPlace='rocket'))
-    calculated_data['cargoScoredCargoShip'] = len(filter_timeline_actions(decompressed_timd, actionType='place', actionPiece='cargo', actionPlace='cargoShip'))
-    calculated_data['cargoScoredLevel1'] = len(filter_timeline_actions(decompressed_timd, actionType='place', actionPiece='cargo', placeLevel='level1'))
-    calculated_data['cargoScoredLevel2'] = len(filter_timeline_actions(decompressed_timd, actionType='place', actionPiece='cargo', placeLevel='level2'))
-    calculated_data['cargoScoredLevel3'] = len(filter_timeline_actions(decompressed_timd, actionType='place', actionPiece='cargo', placeLevel='level3'))
+    calculated_data['cargoScored'] = len(utils.filter_timeline_actions([decompressed_timd], actionType='place', actionPiece='cargo'))
+    calculated_data['hatchesScored'] = len(utils.filter_timeline_actions([decompressed_timd], actionType='place', actionPiece='hatch'))
+    calculated_data['totalCycles'] = calculated_data['cargoScored'] + calculated_data['hatchesScored']
+    calculated_data['hatchesDropped'] = len(utils.filter_timeline_actions([decompressed_timd], actionType='drop', actionPiece='hatch'))
+    calculated_data['cargoDropped'] = len(utils.filter_timeline_actions([decompressed_timd], actionType='drop', actionPiece='cargo'))
+    calculated_data['cargoScoredSS'] = len(utils.filter_timeline_actions([decompressed_timd], actionType='place', actionPiece='cargo', actionTime='sandstorm'))
+    calculated_data['hatchScoredSS'] = len(utils.filter_timeline_actions([decompressed_timd], actionType='place', actionPiece='hatch', actionTime='sandstorm'))
+    calculated_data['cargoScoredTeleop'] = len(utils.filter_timeline_actions([decompressed_timd], actionType='place', actionPiece='cargo', actionTime='teleop'))
+    calculated_data['hatchScoredTeleop'] = len(utils.filter_timeline_actions([decompressed_timd], actionType='place', actionPiece='hatch', actionTime='teleop'))
+    calculated_data['hatchScoredRocket'] = len(utils.filter_timeline_actions([decompressed_timd], actionType='place', actionPiece='hatch', actionPlace='rocket'))
+    calculated_data['hatchScoredCargoShip'] = len(utils.filter_timeline_actions([decompressed_timd], actionType='place', actionPiece='hatch', actionPlace='cargoShip'))
+    calculated_data['hatchScoredLevel1'] = len(utils.filter_timeline_actions([decompressed_timd], actionType='place', actionPiece='hatch', placeLevel='level1'))
+    calculated_data['hatchScoredLevel2'] = len(utils.filter_timeline_actions([decompressed_timd], actionType='place', actionPiece='hatch', placeLevel='level2'))
+    calculated_data['hatchScoredLevel3'] = len(utils.filter_timeline_actions([decompressed_timd], actionType='place', actionPiece='hatch', placeLevel='level3'))
+    calculated_data['cargoScoredRocket'] = len(utils.filter_timeline_actions([decompressed_timd], actionType='place', actionPiece='cargo', actionPlace='rocket'))
+    calculated_data['cargoScoredCargoShip'] = len(utils.filter_timeline_actions([decompressed_timd], actionType='place', actionPiece='cargo', actionPlace='cargoShip'))
+    calculated_data['cargoScoredLevel1'] = len(utils.filter_timeline_actions([decompressed_timd], actionType='place', actionPiece='cargo', placeLevel='level1'))
+    calculated_data['cargoScoredLevel2'] = len(utils.filter_timeline_actions([decompressed_timd], actionType='place', actionPiece='cargo', placeLevel='level2'))
+    calculated_data['cargoScoredLevel3'] = len(utils.filter_timeline_actions([decompressed_timd], actionType='place', actionPiece='cargo', placeLevel='level3'))
+    calculated_data['piecesScoredCargoShip'] = len(utils.filter_timeline_actions([decompressed_timd], actionType='place', actionPlace='cargoShip'))
+    calculated_data['piecesScoredRocket'] = len(utils.filter_timeline_actions([decompressed_timd], actionType='place', actionPlace='rocket'))
 
-    calculated_data['cargoPlaceSuccessRate'] = percent_success_place(decompressed_timd, actionPiece='cargo')
-    calculated_data['hatchPlaceSuccessRate'] = percent_success_place(decompressed_timd, actionPiece='hatch')
-    calculated_data['cargoShipPlaceSuccessRate'] = percent_success_place(decompressed_timd, actionPlace='cargoShip')
-    calculated_data['rocketPlaceSuccessRate'] = percent_success_place(decompressed_timd, actionPlace='rocket')
+    calculated_data['cargoPlaceSuccessRate'] = percent_success_place([decompressed_timd], actionPiece='cargo')
+    calculated_data['hatchPlaceSuccessRate'] = percent_success_place([decompressed_timd], actionPiece='hatch')
+    calculated_data['cargoShipPlaceSuccessRate'] = percent_success_place([decompressed_timd], actionPlace='cargoShip')
+    calculated_data['rocketPlaceSuccessRate'] = percent_success_place([decompressed_timd], actionPlace='rocket')
 
     calculated_data['cargoIntakeSuccessRate'] = percent_success_intake(decompressed_timd, actionPiece='cargo')
     calculated_data['hatchIntakeSuccessRate'] = percent_success_intake(decompressed_timd, actionPiece='hatch')
@@ -199,6 +204,8 @@ def calculate_calculated_data(decompressed_timd):
 
     defense_cycle_list = create_cycle_list(decompressed_timd, 'defense', 'offense')
     calculated_data['timeDefending'] = total_cycle_time(defense_cycle_list)
+
+    calculated_data['timeClimbing'] = utils.filter_timeline_actions([decompressed_timd], actionType='climb')[0].get('actionTime')
 
     return calculated_data
 
@@ -233,62 +240,14 @@ def create_cycle_list(decompressed_timd, action1, action2):
 
 
 def calculate_climb(decompressed_timd):
-    climb_action = filter_timeline_actions(decompressed_timd, actionType='climb')[0]
+    climb_action = utils.filter_timeline_actions([decompressed_timd], actionType='climb')[0]
     climb_action['climbSuccessful'] = (climb_action['attemptedClimb'] == climb_action['actualClimb'])
     return climb_action
 
 
-def filter_timeline_actions(timd, **filters):
-    """
-    Shamelessly stolen almost verbatim from 1678
-    Copyright (c) 2019 FRC Team 1678: Citrus Circuits
-
-    Puts a timeline through a filter to use for calculations.
-
-    timd is the TIMD that needs calculated data.
-    filters are the specifications that certain data points inside the
-    timeline must fit in order to be included in the returned timeline.
-    example for filter - 'level=1' as an argument, '{'level': 1}' inside
-    the function."""
-    filtered_timeline = []
-    # For each action, if any of the specifications are not met, the
-    # loop breaks and moves on to the next action, but if all the
-    # specifications are met, the action is added to the filtered
-    # timeline.
-    for action in timd.get('timeline', []):
-        for data_field, requirement in filters.items():
-            # If the filter specifies time, it can either specify
-            # sandstorm by making the requirement 'sandstorm' or specify
-            # teleop by making the requirement 'teleop'.
-            if data_field == 'actionTime':
-                if requirement == 'sandstorm' and action['actionTime'] < 135:
-                    break
-                elif requirement == 'teleop' and action['actionTime'] >= 135:
-                    break
-            # Otherwise, it checks the requirement normally
-            else:
-                if action.get(data_field) != requirement:
-                    break
-        # If all the requirements are met, the action is added to the
-        # (returned) filtered timeline.
-        else:
-            filtered_timeline.append(action)
-    return filtered_timeline
-
-
-def percent_success_place(timd, **filters):
-    successes = len(filter_timeline_actions(timd, **filters, actionType='place'))
-    fails = len(filter_timeline_actions(timd, **filters, actionType='drop'))
-
-    if successes == 0:
-        return None
-
-    return round(100 * (1 - (fails/successes)))
-
-
 def percent_success_intake(timd, **filters):
-    successes = len(filter_timeline_actions(timd, **filters, actionType='intake'))
-    fails = len(filter_timeline_actions(timd, **filters, actionType='drop'))
+    successes = len(utils.filter_timeline_actions([timd], **filters, actionType='intake'))
+    fails = len(utils.filter_timeline_actions([timd], **filters, actionType='drop'))
 
     if successes == 0:
         return None
@@ -387,6 +346,7 @@ def calculate_TIMD(compressed_timd, timd_name):
     decompressed_timd = decompress_timd(compressed_timd)
     decompressed_timd['calculated'] = calculate_calculated_data(decompressed_timd)
     decompressed_timd['climb'] = calculate_climb(decompressed_timd)
+    print(decompressed_timd)
     print(f'{timd_name} decompressed')
 
     # Save data in local cache
