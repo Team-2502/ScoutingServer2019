@@ -118,9 +118,273 @@ PERCENT_SUCCESS_DATA_FIELDS = {
     },
 }
 
+AVERAGE_CYCLE_TIME_DATA_FIELDS = {
+    'cargoOverall': {
+        'actionPiece': 'cargo',
+        'wasDefended': True,
+    },
+    'cargoDefended': {
+        'actionPiece': 'cargo',
+        'wasDefended': True,
+    },
+    'cargoUndefended': {
+        'actionPiece': 'cargo',
+        'wasDefended': False,
+    },
+    'cargoL1': {
+        'actionPiece': 'cargo',
+        'placeLevel': 'level1',
+    },
+    'cargoL2': {
+        'actionPiece': 'cargo',
+        'placeLevel': 'level2',
+    },
+    'cargoL3': {
+        'actionPiece': 'cargo',
+        'placeLevel': 'level3',
+    },
+    'cargoRocket': {
+        'actionPiece': 'cargo',
+        'actionPlace': 'rocket',
+    },
+    'cargoCargoShip': {
+        'actionPiece': 'cargo',
+        'actionPlace': 'cargoShip',
+    },
+    'hatchOverall': {
+        'actionPiece': 'hatch',
+    },
+    'hatchDefended': {
+        'actionPiece': 'hatch',
+        'wasDefended': True,
+    },
+    'hatchUndefended': {
+        'actionPiece': 'hatch',
+        'wasDefended': False,
+    },
+    'hatchL1': {
+        'actionPiece': 'hatch',
+        'placeLevel': 'level1',
+    },
+    'hatchL2': {
+        'actionPiece': 'hatch',
+        'placeLevel': 'level2',
+    },
+    'hatchL3': {
+        'actionPiece': 'hatch',
+        'placeLevel': 'level3',
+    },
+    'hatchRocket': {
+        'actionPiece': 'hatch',
+        'actionPlace': 'rocket',
+    },
+    'hatchCargoShip': {
+        'actionPiece': 'hatch',
+        'actionPlace': 'cargoShip',
+    },
+}
+
+L3M_AVERAGE_CYCLE_TIME_DATA_FIELDS = {
+    'l3mCargoOverall': {
+        'actionPiece': 'cargo',
+        'wasDefended': True,
+    },
+    'l3mCargoDefended': {
+        'actionPiece': 'cargo',
+        'wasDefended': True,
+    },
+    'l3mCargoUndefended': {
+        'actionPiece': 'cargo',
+        'wasDefended': False,
+    },
+    'l3mCargoL1': {
+        'actionPiece': 'cargo',
+        'placeLevel': 'level1',
+    },
+    'l3mCargoL2': {
+        'actionPiece': 'cargo',
+        'placeLevel': 'level2',
+    },
+    'l3mCargoL3': {
+        'actionPiece': 'cargo',
+        'placeLevel': 'level3',
+    },
+    'l3mCargoRocket': {
+        'actionPiece': 'cargo',
+        'actionPlace': 'rocket',
+    },
+    'l3mCargoCargoShip': {
+        'actionPiece': 'cargo',
+        'actionPlace': 'cargoShip',
+    },
+    'l3mHatchOverall': {
+        'actionPiece': 'hatch',
+    },
+    'l3mHatchDefended': {
+        'actionPiece': 'hatch',
+        'wasDefended': True,
+    },
+    'l3mHatchUndefended': {
+        'actionPiece': 'hatch',
+        'wasDefended': False,
+    },
+    'l3mHatchL1': {
+        'actionPiece': 'hatch',
+        'placeLevel': 'level1',
+    },
+    'l3mHatchL2': {
+        'actionPiece': 'hatch',
+        'placeLevel': 'level2',
+    },
+    'l3mHatchL3': {
+        'actionPiece': 'hatch',
+        'placeLevel': 'level3',
+    },
+    'l3mHatchRocket': {
+        'actionPiece': 'hatch',
+        'actionPlace': 'rocket',
+    },
+    'l3mHatchCargoShip': {
+        'actionPiece': 'hatch',
+        'actionPlace': 'cargoShip',
+    },
+}
+
+P75_CYCLE_TIME_DATA_FIELDS = {
+    'p75CargoOverall': {
+        'actionPiece': 'cargo',
+        'wasDefended': True,
+    },
+    'p75CargoDefended': {
+        'actionPiece': 'cargo',
+        'wasDefended': True,
+    },
+    'p75CargoUndefended': {
+        'actionPiece': 'cargo',
+        'wasDefended': False,
+    },
+    'p75CargoL1': {
+        'actionPiece': 'cargo',
+        'placeLevel': 'level1',
+    },
+    'p75CargoL2': {
+        'actionPiece': 'cargo',
+        'placeLevel': 'level2',
+    },
+    'p75CargoL3': {
+        'actionPiece': 'cargo',
+        'placeLevel': 'level3',
+    },
+    'p75CargoRocket': {
+        'actionPiece': 'cargo',
+        'actionPlace': 'rocket',
+    },
+    'p75CargoCargoShip': {
+        'actionPiece': 'cargo',
+        'actionPlace': 'cargoShip',
+    },
+    'p75HatchOverall': {
+        'actionPiece': 'hatch',
+    },
+    'p75HatchDefended': {
+        'actionPiece': 'hatch',
+        'wasDefended': True,
+    },
+    'p75HatchUndefended': {
+        'actionPiece': 'hatch',
+        'wasDefended': False,
+    },
+    'p75HatchL1': {
+        'actionPiece': 'hatch',
+        'placeLevel': 'level1',
+    },
+    'p75HatchL2': {
+        'actionPiece': 'hatch',
+        'placeLevel': 'level2',
+    },
+    'p75HatchL3': {
+        'actionPiece': 'hatch',
+        'placeLevel': 'level3',
+    },
+    'p75HatchRocket': {
+        'actionPiece': 'hatch',
+        'actionPlace': 'rocket',
+    },
+    'p75HatchCargoShip': {
+        'actionPiece': 'hatch',
+        'actionPlace': 'cargoShip',
+    },
+}
+
+SD_CYCLE_TIME_DATA_FIELDS = {
+    'SDCargoOverall': {
+        'actionPiece': 'cargo',
+        'wasDefended': True,
+    },
+    'SDCargoDefended': {
+        'actionPiece': 'cargo',
+        'wasDefended': True,
+    },
+    'SDCargoUndefended': {
+        'actionPiece': 'cargo',
+        'wasDefended': False,
+    },
+    'SDCargoL1': {
+        'actionPiece': 'cargo',
+        'placeLevel': 'level1',
+    },
+    'SDCargoL2': {
+        'actionPiece': 'cargo',
+        'placeLevel': 'level2',
+    },
+    'SDCargoL3': {
+        'actionPiece': 'cargo',
+        'placeLevel': 'level3',
+    },
+    'SDCargoRocket': {
+        'actionPiece': 'cargo',
+        'actionPlace': 'rocket',
+    },
+    'SDCargoCargoShip': {
+        'actionPiece': 'cargo',
+        'actionPlace': 'cargoShip',
+    },
+    'SDHatchOverall': {
+        'actionPiece': 'hatch',
+    },
+    'SDHatchDefended': {
+        'actionPiece': 'hatch',
+        'wasDefended': True,
+    },
+    'SDHatchUndefended': {
+        'actionPiece': 'hatch',
+        'wasDefended': False,
+    },
+    'SDHatchL1': {
+        'actionPiece': 'hatch',
+        'placeLevel': 'level1',
+    },
+    'SDHatchL2': {
+        'actionPiece': 'hatch',
+        'placeLevel': 'level2',
+    },
+    'SDHatchL3': {
+        'actionPiece': 'hatch',
+        'placeLevel': 'level3',
+    },
+    'SDHatchRocket': {
+        'actionPiece': 'hatch',
+        'actionPlace': 'rocket',
+    },
+    'SDHatchCargoShip': {
+        'actionPiece': 'hatch',
+        'actionPlace': 'cargoShip',
+    },
+}
+
 
 def calculate_team(team_number):
-    team = {'teamNumber': team_number}
+    team = {'teamNumber': team_number, 'defense': {}}
 
     timds = get_TIMDS(team_number)
     l3m_timds = sorted(timds, key=lambda timd: timd.get('matchNumber'))[-3:]
@@ -134,8 +398,6 @@ def calculate_team(team_number):
     team_abilities['placeLevel2'] = True if len(utils.filter_timeline_actions(timds, actionType='place', placeLevel='level2')) > 0 else False
     team_abilities['placeLevel3'] = True if len(utils.filter_timeline_actions(timds, actionType='place', placeLevel='level3')) > 0 else False
     team['team_abilities'] = team_abilities
-
-    defense = {}
 
     totals = {'cargoPlaced': len(utils.filter_timeline_actions(timds, actionType='place', actionPiece='cargo')),
               'hatchesPlaced': len(utils.filter_timeline_actions(timds, actionType='place', actionPiece='cargo')),
@@ -152,6 +414,8 @@ def calculate_team(team_number):
     l3ms = {}
     for l3m_average_data_field, timd_data_field in L3M_AVERAGE_DATA_FIELDS.items():
         l3ms[l3m_average_data_field] = utils.avg([timd['calculated'].get(timd_data_field) for timd in l3m_timds])
+    for success_data_field, filters in PERCENT_SUCCESS_DATA_FIELDS.items():
+        l3ms[success_data_field] = utils.percent_success_place(l3m_timds, **filters)
     team['l3ms'] = l3ms
 
     p75s = {}
@@ -180,6 +444,18 @@ def calculate_team(team_number):
     # percent left hab
     # percent climbed
     # percent climb succeeded
+
+    cycle_times = {}
+    for average_cycle_data_field, filters in AVERAGE_CYCLE_TIME_DATA_FIELDS.items():
+        cycle_times[average_cycle_data_field] = utils.cycle_time_calculations(utils.create_cycle_list(timds, 'place', 'intake'), utils.avg, **filters)
+    for average_cycle_data_field, filters in L3M_AVERAGE_CYCLE_TIME_DATA_FIELDS.items():
+        cycle_times[average_cycle_data_field] = utils.cycle_time_calculations(utils.create_cycle_list(l3m_timds, 'place', 'intake'), utils.avg, **filters)
+    for p75_cycle_data_field, filters in P75_CYCLE_TIME_DATA_FIELDS.items():
+        cycle_times[p75_cycle_data_field] = utils.cycle_time_calculations(utils.create_cycle_list(timds, 'place', 'intake'), utils.p75, **filters)
+    for SD_cycle_data_field, filters in SD_CYCLE_TIME_DATA_FIELDS.items():
+        cycle_times[SD_cycle_data_field] = utils.cycle_time_calculations(utils.create_cycle_list(timds, 'place', 'intake'), utils.SD, **filters)
+
+    team['cycle_times'] = cycle_times
 
     print(team)
 
