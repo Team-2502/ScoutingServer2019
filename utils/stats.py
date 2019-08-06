@@ -64,8 +64,8 @@ def percent_success_place(timds, **filters):
 
 
 def percent_success_intake(timd, **filters):
-    successes = len(utils.filter_timeline_actions([timd], **filters, actionType='intake'))
-    fails = len(utils.filter_timeline_actions([timd], **filters, actionType='drop'))
+    successes = len(filter_timeline_actions([timd], **filters, actionType='intake'))
+    fails = len(filter_timeline_actions([timd], **filters, actionType='drop'))
 
     if successes + fails == 0:
         return None

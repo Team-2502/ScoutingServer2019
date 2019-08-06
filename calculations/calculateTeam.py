@@ -1,7 +1,7 @@
 import os
 import json
 
-import utils
+from utils import *
 
 TOTAL_AVERAGE_DATA_FIELDS = {
     'avgCargoScored': 'cargoScored',
@@ -391,46 +391,46 @@ def calculate_team(team_number):
     team['timds']: get_timds(team_number)
 
     team_abilities = {}
-    team_abilities['groundCargoPickup'] = True if len(utils.filter_timeline_actions(timds, actionType='intake', actionPiece='cargo')) > 0 else False
-    team_abilities['groundHatchPickup'] = True if len(utils.filter_timeline_actions(timds, actionType='intake', actionPiece='cargo')) > 0 else False
-    team_abilities['climbHab2'] = True if len(utils.filter_timeline_actions(timds, actionType='climb', actualClimb='level2')) > 0 else False
-    team_abilities['climbHab3'] = True if len(utils.filter_timeline_actions(timds, actionType='climb', actualClimb='level3')) > 0 else False
-    team_abilities['placeLevel2'] = True if len(utils.filter_timeline_actions(timds, actionType='place', placeLevel='level2')) > 0 else False
-    team_abilities['placeLevel3'] = True if len(utils.filter_timeline_actions(timds, actionType='place', placeLevel='level3')) > 0 else False
+    team_abilities['groundCargoPickup'] = True if len(cycles.filter_timeline_actions(timds, actionType='intake', actionPiece='cargo')) > 0 else False
+    team_abilities['groundHatchPickup'] = True if len(cycles.filter_timeline_actions(timds, actionType='intake', actionPiece='cargo')) > 0 else False
+    team_abilities['climbHab2'] = True if len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level2')) > 0 else False
+    team_abilities['climbHab3'] = True if len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level3')) > 0 else False
+    team_abilities['placeLevel2'] = True if len(cycles.filter_timeline_actions(timds, actionType='place', placeLevel='level2')) > 0 else False
+    team_abilities['placeLevel3'] = True if len(cycles.filter_timeline_actions(timds, actionType='place', placeLevel='level3')) > 0 else False
     team['team_abilities'] = team_abilities
 
-    totals = {'cargoPlaced': len(utils.filter_timeline_actions(timds, actionType='place', actionPiece='cargo')),
-              'hatchesPlaced': len(utils.filter_timeline_actions(timds, actionType='place', actionPiece='cargo')),
-              'cyclesLevel1': len(utils.filter_timeline_actions(timds, actionType='place', placeLevel='level1')),
-              'cyclesLevel2': len(utils.filter_timeline_actions(timds, actionType='place', placeLevel='level2')),
-              'cyclesLevel3': len(utils.filter_timeline_actions(timds, actionType='place', placeLevel='level3')),
-              'cyclesRocket': len(utils.filter_timeline_actions(timds, actionType='place', actionPlace='rocket')),
-              'cyclesCargoShip': len(utils.filter_timeline_actions(timds, actionType='place', actionPlace='cargoShip'))}
+    totals = {'cargoPlaced': len(cycles.filter_timeline_actions(timds, actionType='place', actionPiece='cargo')),
+              'hatchesPlaced': len(cycles.filter_timeline_actions(timds, actionType='place', actionPiece='cargo')),
+              'cyclesLevel1': len(cycles.filter_timeline_actions(timds, actionType='place', placeLevel='level1')),
+              'cyclesLevel2': len(cycles.filter_timeline_actions(timds, actionType='place', placeLevel='level2')),
+              'cyclesLevel3': len(cycles.filter_timeline_actions(timds, actionType='place', placeLevel='level3')),
+              'cyclesRocket': len(cycles.filter_timeline_actions(timds, actionType='place', actionPlace='rocket')),
+              'cyclesCargoShip': len(cycles.filter_timeline_actions(timds, actionType='place', actionPlace='cargoShip'))}
 
     for average_data_field, timd_data_field in TOTAL_AVERAGE_DATA_FIELDS.items():
-        totals[average_data_field] = utils.avg([timd['calculated'].get(timd_data_field) for timd in timds])
+        totals[average_data_field] = stats.avg([timd['calculated'].get(timd_data_field) for timd in timds])
     team['totals'] = totals
 
     l3ms = {}
     for l3m_average_data_field, timd_data_field in L3M_AVERAGE_DATA_FIELDS.items():
-        l3ms[l3m_average_data_field] = utils.avg([timd['calculated'].get(timd_data_field) for timd in l3m_timds])
+        l3ms[l3m_average_data_field] = stats.avg([timd['calculated'].get(timd_data_field) for timd in l3m_timds])
     for success_data_field, filters in PERCENT_SUCCESS_DATA_FIELDS.items():
-        l3ms[success_data_field] = utils.percent_success_place(l3m_timds, **filters)
+        l3ms[success_data_field] = stats.percent_success_place(l3m_timds, **filters)
     team['l3ms'] = l3ms
 
     p75s = {}
     for p75_data_field, timd_data_field in P75_DATA_FIELDS.items():
-        p75s[p75_data_field] = utils.p75([timd['calculated'].get(timd_data_field) for timd in timds])
+        p75s[p75_data_field] = stats.p75([timd['calculated'].get(timd_data_field) for timd in timds])
     team['p75s'] = p75s
 
     SDs = {}
     for SD_data_field, timd_data_field in SD_DATA_FIELDS.items():
-        SDs[SD_data_field] = utils.SD([timd['calculated'].get(timd_data_field) for timd in timds])
+        SDs[SD_data_field] = stats.SD([timd['calculated'].get(timd_data_field) for timd in timds])
     team['SDs'] = SDs
 
     percentages = {}
     for success_data_field, filters in PERCENT_SUCCESS_DATA_FIELDS.items():
-        percentages[success_data_field] = utils.percent_success_place(timds, **filters)
+        percentages[success_data_field] = stats.percent_success_place(timds, **filters)
 
     percentages['hatchPercentageOfCycles'] = sum([timd['calculated']['hatchesScored'] for timd in timds]) / sum([timd['calculated']['totalCycles'] for timd in timds]) if sum([timd['calculated']['totalCycles'] for timd in timds]) != 0 else 0
     percentages['hatchPercentageOfCycles'] = round(100 * (1 - percentages['hatchPercentageOfCycles']))
@@ -447,13 +447,13 @@ def calculate_team(team_number):
 
     cycle_times = {}
     for average_cycle_data_field, filters in AVERAGE_CYCLE_TIME_DATA_FIELDS.items():
-        cycle_times[average_cycle_data_field] = utils.cycle_time_calculations(utils.create_cycle_list(timds, 'place', 'intake'), utils.avg, **filters)
+        cycle_times[average_cycle_data_field] = cycles.cycle_time_calculations(cycles.create_cycle_list(timds, 'place', 'intake'), stats.avg, **filters)
     for average_cycle_data_field, filters in L3M_AVERAGE_CYCLE_TIME_DATA_FIELDS.items():
-        cycle_times[average_cycle_data_field] = utils.cycle_time_calculations(utils.create_cycle_list(l3m_timds, 'place', 'intake'), utils.avg, **filters)
+        cycle_times[average_cycle_data_field] = cycles.cycle_time_calculations(cycles.create_cycle_list(l3m_timds, 'place', 'intake'), stats.avg, **filters)
     for p75_cycle_data_field, filters in P75_CYCLE_TIME_DATA_FIELDS.items():
-        cycle_times[p75_cycle_data_field] = utils.cycle_time_calculations(utils.create_cycle_list(timds, 'place', 'intake'), utils.p75, **filters)
+        cycle_times[p75_cycle_data_field] = cycles.cycle_time_calculations(cycles.create_cycle_list(timds, 'place', 'intake'), stats.p75, **filters)
     for SD_cycle_data_field, filters in SD_CYCLE_TIME_DATA_FIELDS.items():
-        cycle_times[SD_cycle_data_field] = utils.cycle_time_calculations(utils.create_cycle_list(timds, 'place', 'intake'), utils.SD, **filters)
+        cycle_times[SD_cycle_data_field] = cycles.cycle_time_calculations(cycles.create_cycle_list(timds, 'place', 'intake'), stats.SD, **filters)
 
     team['cycle_times'] = cycle_times
 
