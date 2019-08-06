@@ -1,6 +1,5 @@
 import sensitiveInfo
-import calculateTIMD
-import calculateTeam
+from calculations import calculateTIMD, calculateTeam
 
 import os
 import pyrebase
