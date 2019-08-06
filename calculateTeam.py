@@ -386,9 +386,9 @@ SD_CYCLE_TIME_DATA_FIELDS = {
 def calculate_team(team_number):
     team = {'teamNumber': team_number, 'defense': {}}
 
-    timds = get_TIMDS(team_number)
+    timds = get_timds(team_number)
     l3m_timds = sorted(timds, key=lambda timd: timd.get('matchNumber'))[-3:]
-    team['timds']: get_TIMDS(team_number)
+    team['timds']: get_timds(team_number)
 
     team_abilities = {}
     team_abilities['groundCargoPickup'] = True if len(utils.filter_timeline_actions(timds, actionType='intake', actionPiece='cargo')) > 0 else False
@@ -460,7 +460,7 @@ def calculate_team(team_number):
     print(team)
 
 
-def get_TIMDS(team_number):
+def get_timds(team_number):
     homeDir = os.path.expanduser('~')
     TIMDs = os.listdir(os.path.join(homeDir, 'ScoutingServer/cache/TIMDs'))
     return [json.loads(open(os.path.join(homeDir, 'ScoutingServer/cache/TIMDs/', TIMD)).read()) for TIMD in TIMDs if int(TIMD.split('-')[1]) == team_number]

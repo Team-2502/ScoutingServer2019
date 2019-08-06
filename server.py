@@ -24,7 +24,7 @@ while x < 1:
     rawTIMDs = database.child('rawTIMDs').get()
     if rawTIMDs.val() is not None:
         for temp_timd in rawTIMDs.each():
-            calculateTIMD.calculate_TIMD(temp_timd.val(), temp_timd.key())
+            calculateTIMD.calculate_timd(temp_timd.val(), temp_timd.key())
             # database.child("rawTIMDs").child(temp_timd.key()).remove()
             team_num = temp_timd.key().split("-")[1]
             calculateTeam.calculate_team(team_num)
