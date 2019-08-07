@@ -4,6 +4,7 @@ import pyrebase
 
 import sensitiveInfo
 from utils import *
+import calculations.calculateRankings
 
 TOTAL_AVERAGE_DATA_FIELDS = {
     'avgCargoScored': 'cargoScored',
@@ -24,7 +25,8 @@ TOTAL_AVERAGE_DATA_FIELDS = {
     'avgHatchDrops': 'hatchesDropped',
     'avgTimeIncap': 'timeIncap',
     'avgTimeClimbing': 'timeClimbing',
-    'avgTimeDefending': 'timeDefending'
+    'avgTimeDefending': 'timeDefending',
+    'avgTOC': 'trueOffensiveContribution'
 }
 
 L3M_AVERAGE_DATA_FIELDS = {
@@ -132,7 +134,6 @@ PERCENT_SUCCESS_DATA_FIELDS = {
 AVERAGE_CYCLE_TIME_DATA_FIELDS = {
     'cargoOverall': {
         'actionPiece': 'cargo',
-        'wasDefended': True,
     },
     'cargoDefended': {
         'actionPiece': 'cargo',
@@ -464,14 +465,16 @@ def calculate_team(team_number):
     cycle_times = {}
     for average_cycle_data_field, filters in AVERAGE_CYCLE_TIME_DATA_FIELDS.items():
         cycle_times[average_cycle_data_field] = cycles.cycle_time_calculations(cycles.create_cycle_list(timds, 'place', 'intake'), stats.avg, **filters)
-    for average_cycle_data_field, filters in L3M_AVERAGE_CYCLE_TIME_DATA_FIELDS.items():
-        cycle_times[average_cycle_data_field] = cycles.cycle_time_calculations(cycles.create_cycle_list(l3m_timds, 'place', 'intake'), stats.avg, **filters)
+    for l3m_average_cycle_data_field, filters in L3M_AVERAGE_CYCLE_TIME_DATA_FIELDS.items():
+        cycle_times[l3m_average_cycle_data_field] = cycles.cycle_time_calculations(cycles.create_cycle_list(l3m_timds, 'place', 'intake'), stats.avg, **filters)
     for p75_cycle_data_field, filters in P75_CYCLE_TIME_DATA_FIELDS.items():
         cycle_times[p75_cycle_data_field] = cycles.cycle_time_calculations(cycles.create_cycle_list(timds, 'place', 'intake'), stats.p75, **filters)
     for SD_cycle_data_field, filters in SD_CYCLE_TIME_DATA_FIELDS.items():
         cycle_times[SD_cycle_data_field] = cycles.cycle_time_calculations(cycles.create_cycle_list(timds, 'place', 'intake'), stats.SD, **filters)
 
     team['cycle_times'] = cycle_times
+
+    team['rankings'] = calculations.calculateRankings.calculate_rankings(team_number)
 
     print(f'{team_number} calculated')
 
@@ -492,7 +495,7 @@ def calculate_team(team_number):
     if not os.path.exists(os.path.join(homeDir, 'ScoutingServer/cache/teams')):
         os.makedirs(os.path.join(homeDir, 'ScoutingServer/cache/teams'))
 
-    with open(os.path.join(homeDir, f'ScoutingServer/cache/TIMDs/{team_number}.json'), 'w') as file:
+    with open(os.path.join(homeDir, f'ScoutingServer/cache/teams/{team_number}.json'), 'w') as file:
         json.dump(team, file)
     print(f'{team_number} cached')
 
