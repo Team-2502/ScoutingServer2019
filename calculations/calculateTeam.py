@@ -1,6 +1,8 @@
 import os
 import json
+import pyrebase
 
+import sensitiveInfo
 from utils import *
 
 TOTAL_AVERAGE_DATA_FIELDS = {
@@ -51,6 +53,15 @@ SD_DATA_FIELDS = {
     'SDHatchDrops': 'hatchesDropped',
     'SDTimeIncap': 'timeIncap',
     'SDTimeClimbing': 'timeClimbing',
+}
+
+MAX_DATA_FIELDS = {
+    'maxCargoScored': 'cargoScored',
+    'maxHatchesScored': 'hatchesScored',
+    'maxPiecesScoredRocket': 'piecesScoredRocket',
+    'maxPiecesScoredCargoShip': 'piecesScoredCargoShip',
+    'maxCargoDrops': 'cargoDropped',
+    'maxHatchDrops': 'hatchesDropped',
 }
 
 PERCENT_SUCCESS_DATA_FIELDS = {
@@ -428,6 +439,11 @@ def calculate_team(team_number):
         SDs[SD_data_field] = stats.SD([timd['calculated'].get(timd_data_field) for timd in timds])
     team['SDs'] = SDs
 
+    maxes = {}
+    for max_data_field, timd_data_field in MAX_DATA_FIELDS.items():
+        maxes[max_data_field] = stats.maximum([timd['calculated'].get(timd_data_field) for timd in timds])
+    team['maxes'] = maxes
+
     percentages = {}
     for success_data_field, filters in PERCENT_SUCCESS_DATA_FIELDS.items():
         percentages[success_data_field] = stats.percent_success_place(timds, **filters)
@@ -457,7 +473,31 @@ def calculate_team(team_number):
 
     team['cycle_times'] = cycle_times
 
-    print(team)
+    print(f'{team_number} calculated')
+
+    homeDir = os.path.expanduser('~')
+
+    pyrebase_config = {
+        "apiKey": sensitiveInfo.firebase_api_key(),
+        "authDomain": "offseasondds.firebaseapp.com",
+        "databaseURL": "https://offseasondds.firebaseio.com",
+        "storageBucket": "offseasondds.appspot.com",
+        "serviceAccount": os.path.join(homeDir, "ScoutingServer/config/offseasondds-3695dd827748.json")
+    }
+
+    firebase = pyrebase.initialize_app(pyrebase_config)
+    database = firebase.database()
+
+    # Save data in local cache
+    if not os.path.exists(os.path.join(homeDir, 'ScoutingServer/cache/teams')):
+        os.makedirs(os.path.join(homeDir, 'ScoutingServer/cache/teams'))
+
+    with open(os.path.join(homeDir, f'ScoutingServer/cache/TIMDs/{team_number}.json'), 'w') as file:
+        json.dump(team, file)
+    print(f'{team_number} cached')
+
+    database.child("teams").child(team_number).set(team)
+    print(f'{team_number} uploaded to Firebase')
 
 
 def get_timds(team_number):
