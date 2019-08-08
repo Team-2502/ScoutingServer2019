@@ -19,10 +19,19 @@ firebase = pyrebase.initialize_app(pyrebase_config)
 database = firebase.database()
 
 
+def reset_timds():
+    for timd in database.child('decompedTIMDs').get().each():
+        database.child("rawTIMDs").child(timd.key()).set(timd.val())
+        database.child("decompedTIMDs").child(timd.key()).remove()
+
 rawTIMDs = database.child('rawTIMDs').get()
-if rawTIMDs.val() is not None:
-    for temp_timd in rawTIMDs.each():
-        calculateTIMD.calculate_timd(temp_timd.val(), temp_timd.key())
-        database.child("rawTIMDs").child(temp_timd.key()).remove()
-        team_num = temp_timd.key().split("-")[1]
-        calculateTeam.calculate_team(team_num)
+if rawTIMDs.val() is None:
+    reset_timds()
+
+rawTIMDs = database.child('rawTIMDs').get()
+for temp_timd in rawTIMDs.each():
+    calculateTIMD.calculate_timd(temp_timd.val(), temp_timd.key())
+    database.child("rawTIMDs").child(temp_timd.key()).remove()
+    team_num = temp_timd.key().split("-")[1]
+    print(team_num)
+    calculateTeam.calculate_team(team_num)

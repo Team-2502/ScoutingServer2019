@@ -8,3 +8,5 @@ if not os.path.exists(os.path.join(homeDir, 'ScoutingServer/assignments')):
     os.makedirs(os.path.join(homeDir, 'ScoutingServer/assignments'))
 if not os.path.exists(os.path.join(homeDir, 'ScoutingServer/cache')):
     os.makedirs(os.path.join(homeDir, 'ScoutingServer/cache'))
+    os.makedirs(os.path.join(homeDir, 'ScoutingServer/cache/teams'))
+    os.makedirs(os.path.join(homeDir, 'ScoutingServer/cache/TIMDs'))

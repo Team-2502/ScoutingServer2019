@@ -476,7 +476,7 @@ def calculate_team(team_number):
 
     team['cycle_times'] = cycle_times
 
-    team['rankings'] = calculations.calculateRankings.calculate_rankings(team_number, team)
+    team['rankings'] = calculations.calculateRankings.calculate_rankings(int(team_number), team)
 
     print(f'{team_number} calculated')
 
@@ -507,8 +507,8 @@ def calculate_team(team_number):
 
 def get_timds(team_number):
     homeDir = os.path.expanduser('~')
-    TIMDs = os.listdir(os.path.join(homeDir, 'ScoutingServer/cache/TIMDs'))
-    return [json.loads(open(os.path.join(homeDir, 'ScoutingServer/cache/TIMDs/', TIMD)).read()) for TIMD in TIMDs if int(TIMD.split('-')[1]) == team_number]
+    TIMDs = [timd for timd in os.listdir(os.path.join(homeDir, 'ScoutingServer/cache/TIMDs')) if timd != '.DS_Store']
+    return [json.loads(open(os.path.join(homeDir, 'ScoutingServer/cache/TIMDs/', TIMD)).read()) for TIMD in TIMDs if int(TIMD.split('-')[1]) == int(team_number)]
 
 
 if __name__ == '__main__':

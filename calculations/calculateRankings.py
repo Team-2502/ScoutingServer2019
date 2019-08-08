@@ -1,37 +1,38 @@
 import os
 import json
+from scipy.stats import rankdata
 
 
 def calculate_rankings(team_num, current_team):
     homeDir = os.path.expanduser('~')
-    teams_json = os.listdir(os.path.join(homeDir, 'ScoutingServer/cache/teams'))
-    teams = [json.loads(open(os.path.join(homeDir, 'ScoutingServer/cache/teams/', team)).read()) for team in teams_json] + [current_team]
+    teams_json = [file for file in os.listdir(os.path.join(homeDir, 'ScoutingServer/cache/teams')) if file != '.DS_Store']
+    teams = [json.loads(open(os.path.join(homeDir, 'ScoutingServer/cache/teams/', team)).read()) for team in teams_json if int(team.split('.')[0]) != team_num] + [current_team]
+    index = [team['teamNumber'] for team in teams].index(team_num)
 
     rankings = {}
 
     rankings['numOfTeamsUsed'] = len(teams)
 
-    print([int(team['teamNumber']) for team in sorted(teams, key=lambda i: i['totals']['avgTOC'])])
-    rankings['avgTOC'] = [team['teamNumber'] for team in sorted(teams, key=lambda i: i['totals']['avgTOC'])].index(team_num) + 1
+    rankings['avgTOC'] = int(rankdata([team['totals']['avgTOC'] for team in teams], method='min').astype(int)[index])
 
-    rankings['maxCargoScored'] = [team['teamNumber'] for team in sorted(teams, key=lambda i: i['maxes']['maxCargoScored'], reverse=True)].index(team_num) + 1
-    rankings['maxHatchesScored'] = [team['teamNumber'] for team in sorted(teams, key=lambda i: i['maxes']['maxHatchesScored'], reverse=True)].index(team_num) + 1
-    rankings['avgCargoScored'] = [team['teamNumber'] for team in sorted(teams, key=lambda i: i['totals']['avgCargoScored'], reverse=True)].index(team_num) + 1
-    rankings['avgHatchesScored'] = [team['teamNumber'] for team in sorted(teams, key=lambda i: i['totals']['avgCargoScored'], reverse=True)].index(team_num) + 1
-    rankings['p75CargoScored'] = [team['teamNumber'] for team in sorted(teams, key=lambda i: i['p75s']['p75CargoScored'], reverse=True)].index(team_num) + 1
-    rankings['p75HatchesScored'] = [team['teamNumber'] for team in sorted(teams, key=lambda i: i['p75s']['p75HatchesScored'], reverse=True)].index(team_num) + 1
+    rankings['maxCargoScored'] = int(rankdata([team['maxes']['maxCargoScored'] for team in teams], method='min').astype(int)[index])
+    rankings['maxHatchesScored'] = int(rankdata([team['maxes']['maxHatchesScored'] for team in teams], method='min').astype(int)[index])
+    rankings['avgCargoScored'] = int(rankdata([team['totals']['avgCargoScored'] for team in teams], method='min').astype(int)[index])
+    rankings['avgHatchesScored'] = int(rankdata([team['totals']['avgHatchesScored'] for team in teams], method='min').astype(int)[index])
+    rankings['p75CargoScored'] = int(rankdata([team['p75s']['p75CargoScored'] for team in teams], method='min').astype(int)[index])
+    rankings['p75HatchesScored'] = int(rankdata([team['p75s']['p75HatchesScored'] for team in teams], method='min').astype(int)[index])
 
-    rankings['avgTimeClimbing'] = [team['teamNumber'] for team in sorted(teams, key=lambda i: i['totals']['avgTimeClimbing'])].index(team_num) + 1
-    rankings['avgTimeDefending'] = [team['teamNumber'] for team in sorted(teams, key=lambda i: i['totals']['avgTimeDefending'])].index(team_num) + 1
+    rankings['avgTimeClimbing'] = int(rankdata([-1 * i for i in [team['totals']['avgTimeClimbing'] for team in teams]], method='min').astype(int)[index])
+    rankings['avgTimeDefending'] = int(rankdata([team['totals']['avgTimeDefending'] for team in teams], method='min').astype(int)[index])
 
-    rankings['avgHatchCycleTime'] = [team['teamNumber'] for team in sorted(teams, key=lambda i: i['cycle_times']['hatchOverall'])].index(team_num) + 1
-    rankings['avgCargoCycleTime'] = [team['teamNumber'] for team in sorted(teams, key=lambda i: i['cycle_times']['cargoOverall'])].index(team_num) + 1
+    rankings['avgHatchCycleTime'] = int(rankdata([-1 * i for i in [team['cycle_times']['hatchOverall'] for team in teams]], method='min').astype(int)[index])
+    rankings['avgCargoCycleTime'] = int(rankdata([-1 * i for i in [team['cycle_times']['cargoOverall'] for team in teams]], method='min').astype(int)[index])
 
-    rankings['p75HatchCycleTimeUndefended'] = [team['teamNumber'] for team in sorted(teams, key=lambda i: i['cycle_times']['p75HatchUndefended'])].index(team_num) + 1
-    rankings['p75CargoCycleTimeUndefended'] = [team['teamNumber'] for team in sorted(teams, key=lambda i: i['cycle_times']['p75CargoUndefended'])].index(team_num) + 1
+    rankings['p75HatchCycleTimeUndefended'] = int(rankdata([-1 * i for i in [team['cycle_times']['p75HatchUndefended'] for team in teams]], method='min').astype(int)[index])
+    rankings['p75CargoCycleTimeUndefended'] = int(rankdata([-1 * i for i in [team['cycle_times']['p75CargoUndefended'] for team in teams]], method='min').astype(int)[index])
 
     return rankings
 
 
 if __name__ == '__main__':
-    calculate_rankings(2337)
+    calculate_rankings(868)

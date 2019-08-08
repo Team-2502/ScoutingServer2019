@@ -98,8 +98,7 @@ def calculate_timd(compressed_timd, timd_name, test=False):
             os.makedirs(os.path.join(homeDir, 'ScoutingServer/cache/TIMDs'))
 
         with open(os.path.join(homeDir, f'ScoutingServer/cache/TIMDs/{timd_name}.json'), 'w') as file:
-            pass
-            #json.dump(decompressed_timd, file)
+            json.dump(decompressed_timd, file)
         print(f'{timd_name} cached')
 
         database.child("TIMDs").child(timd_name).set(decompressed_timd)
