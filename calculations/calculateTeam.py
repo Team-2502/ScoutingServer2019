@@ -46,6 +46,7 @@ P75_DATA_FIELDS = {
     'p75HatchDrops': 'hatchesDropped',
     'p75TimeIncap': 'timeIncap',
     'p75TimeClimbing': 'timeClimbing',
+    'p75TOC': 'trueOffensiveContribution'
 }
 
 SD_DATA_FIELDS = {
@@ -64,6 +65,7 @@ MAX_DATA_FIELDS = {
     'maxPiecesScoredCargoShip': 'piecesScoredCargoShip',
     'maxCargoDrops': 'cargoDropped',
     'maxHatchDrops': 'hatchesDropped',
+    'maxTOC': 'trueOffensiveContribution'
 }
 
 PERCENT_SUCCESS_DATA_FIELDS = {
@@ -474,7 +476,7 @@ def calculate_team(team_number):
 
     team['cycle_times'] = cycle_times
 
-    team['rankings'] = calculations.calculateRankings.calculate_rankings(team_number)
+    team['rankings'] = calculations.calculateRankings.calculate_rankings(team_number, team)
 
     print(f'{team_number} calculated')
 

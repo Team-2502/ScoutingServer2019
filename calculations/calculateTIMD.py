@@ -92,7 +92,6 @@ def calculate_timd(compressed_timd, timd_name):
     decompressed_timd = decompression.decompress_timd(compressed_timd)
     decompressed_timd['calculated'] = calculate_statistics(decompressed_timd)
     decompressed_timd['climb'] = calculate_climb(decompressed_timd)
-    print(decompressed_timd)
     print(f'{timd_name} decompressed')
 
     # Save data in local cache

@@ -48,7 +48,7 @@ def cycle_time_calculations(cycle_list, calc_to_run, **filters):
         # counts down in the timeline.
         cycle_times.append(cycle[0].get('actionTime') -
                            cycle[1].get('actionTime'))
-    return calc_to_run(cycle_times, None, cycles=True)
+    return calc_to_run(cycle_times, 0, cycles=True)
 
 
 def total_cycle_time(cycle_list, **filters):

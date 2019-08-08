@@ -2,15 +2,16 @@ import os
 import json
 
 
-def calculate_rankings(team_num):
+def calculate_rankings(team_num, current_team):
     homeDir = os.path.expanduser('~')
     teams_json = os.listdir(os.path.join(homeDir, 'ScoutingServer/cache/teams'))
-    teams = [json.loads(open(os.path.join(homeDir, 'ScoutingServer/cache/teams/', team)).read()) for team in teams_json]
+    teams = [json.loads(open(os.path.join(homeDir, 'ScoutingServer/cache/teams/', team)).read()) for team in teams_json] + [current_team]
 
     rankings = {}
 
     rankings['numOfTeamsUsed'] = len(teams)
 
+    print([int(team['teamNumber']) for team in sorted(teams, key=lambda i: i['totals']['avgTOC'])])
     rankings['avgTOC'] = [team['teamNumber'] for team in sorted(teams, key=lambda i: i['totals']['avgTOC'])].index(team_num) + 1
 
     rankings['maxCargoScored'] = [team['teamNumber'] for team in sorted(teams, key=lambda i: i['maxes']['maxCargoScored'], reverse=True)].index(team_num) + 1
@@ -34,6 +35,3 @@ def calculate_rankings(team_num):
 
 if __name__ == '__main__':
     calculate_rankings(2337)
-
-
-# TODO Make sure none of the fields for any of the teams are none or else an error happens
