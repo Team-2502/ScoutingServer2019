@@ -406,7 +406,7 @@ def calculate_team(team_number):
 
     team_abilities = {}
     team_abilities['groundCargoPickup'] = True if len(cycles.filter_timeline_actions(timds, actionType='intake', actionPiece='cargo')) > 0 else False
-    team_abilities['groundHatchPickup'] = True if len(cycles.filter_timeline_actions(timds, actionType='intake', actionPiece='cargo')) > 0 else False
+    team_abilities['groundHatchPickup'] = True if len(cycles.filter_timeline_actions(timds, actionType='intake', actionPiece='hatch')) > 0 else False
     team_abilities['climbHab2'] = True if len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level2')) > 0 else False
     team_abilities['climbHab3'] = True if len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level3')) > 0 else False
     team_abilities['placeLevel2'] = True if len(cycles.filter_timeline_actions(timds, actionType='place', placeLevel='level2')) > 0 else False
@@ -414,7 +414,7 @@ def calculate_team(team_number):
     team['team_abilities'] = team_abilities
 
     totals = {'cargoPlaced': len(cycles.filter_timeline_actions(timds, actionType='place', actionPiece='cargo')),
-              'hatchesPlaced': len(cycles.filter_timeline_actions(timds, actionType='place', actionPiece='cargo')),
+              'hatchesPlaced': len(cycles.filter_timeline_actions(timds, actionType='place', actionPiece='hatch')),
               'cyclesLevel1': len(cycles.filter_timeline_actions(timds, actionType='place', placeLevel='level1')),
               'cyclesLevel2': len(cycles.filter_timeline_actions(timds, actionType='place', placeLevel='level2')),
               'cyclesLevel3': len(cycles.filter_timeline_actions(timds, actionType='place', placeLevel='level3')),
@@ -512,4 +512,4 @@ def get_timds(team_number):
 
 
 if __name__ == '__main__':
-    calculate_team(2337)
+    calculate_team(51)

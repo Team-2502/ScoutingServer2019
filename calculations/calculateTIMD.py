@@ -6,9 +6,6 @@ import pyrebase
 
 from utils import *
 
-very_cool_timd = 'A2B1114CbDaEdFtGfHkImJt|KrLzM143NmOsQxPf,KqLoM140Nm,KrLzM135NmOsQxPf,KqLoM129Nm,KrLyM122NmOvPf,KqLoM118Nm,KrLyM114NmOvPf,KqLpM111Nl,KrLyM107NlOvPf,KqLpM101Nl,KrLyM99NlOvPf,KqLoM97Nm,KrLyM92NmOuPf,KqLoM88Nm,KrLyM84NmOuPf,KqLoM80Nm,KrLyM75NmOsPf,KqLoM72Nm,KrLyM68NmOsPf,KqLpM66Nl,KrLyM62NlOuPf,KqLpM60Nl,KrLyM57NlOuPf,KqLpM53Nl,KrLyM51NlOsPf,KqLpM48Nl,KrLyM46NlOsPf,KqLpM42Nl,KrLzM39NlOsQxPf,KqLoM35Nm,KrLzM30NmOsQwPf,KqLpM28Nl,KrLzM24NlOsQwPf,KqLoM19Nm,KrLyM10NmOvPf,KaeM7RvSv'
-
-
 def calculate_statistics(decompressed_timd):
     calculated_data = {}
 
@@ -75,36 +72,38 @@ def calculate_climb(decompressed_timd):
     return climb_action
 
 
-def calculate_timd(compressed_timd, timd_name):
-    homeDir = os.path.expanduser('~')
-
-    pyrebase_config = {
-        "apiKey": sensitiveInfo.firebase_api_key(),
-        "authDomain": "offseasondds.firebaseapp.com",
-        "databaseURL": "https://offseasondds.firebaseio.com",
-        "storageBucket": "offseasondds.appspot.com",
-        "serviceAccount": os.path.join(homeDir, "ScoutingServer/config/offseasondds-3695dd827748.json")
-    }
-
-    firebase = pyrebase.initialize_app(pyrebase_config)
-    database = firebase.database()
-
+def calculate_timd(compressed_timd, timd_name, test=False):
     decompressed_timd = decompression.decompress_timd(compressed_timd)
     decompressed_timd['calculated'] = calculate_statistics(decompressed_timd)
     decompressed_timd['climb'] = calculate_climb(decompressed_timd)
-    print(f'{timd_name} decompressed')
 
-    # Save data in local cache
-    if not os.path.exists(os.path.join(homeDir, 'ScoutingServer/cache/TIMDs')):
-        os.makedirs(os.path.join(homeDir, 'ScoutingServer/cache/TIMDs'))
+    if not test:
+        print(f'{timd_name} decompressed')
 
-    with open(os.path.join(homeDir, f'ScoutingServer/cache/TIMDs/{timd_name}.json'), 'w') as file:
-        json.dump(decompressed_timd, file)
-    print(f'{timd_name} cached')
+        homeDir = os.path.expanduser('~')
 
-    database.child("TIMDs").child(timd_name).set(decompressed_timd)
-    print(f'{timd_name} uploaded to Firebase')
+        pyrebase_config = {
+            "apiKey": sensitiveInfo.firebase_api_key(),
+            "authDomain": "offseasondds.firebaseapp.com",
+            "databaseURL": "https://offseasondds.firebaseio.com",
+            "storageBucket": "offseasondds.appspot.com",
+            "serviceAccount": os.path.join(homeDir, "ScoutingServer/config/offseasondds-3695dd827748.json")
+        }
 
+        firebase = pyrebase.initialize_app(pyrebase_config)
+        database = firebase.database()
 
-if __name__ == '__main__':
-    calculate_timd(very_cool_timd, 'QM2-1114-a')
+        # Save data in local cache
+        if not os.path.exists(os.path.join(homeDir, 'ScoutingServer/cache/TIMDs')):
+            os.makedirs(os.path.join(homeDir, 'ScoutingServer/cache/TIMDs'))
+
+        with open(os.path.join(homeDir, f'ScoutingServer/cache/TIMDs/{timd_name}.json'), 'w') as file:
+            pass
+            #json.dump(decompressed_timd, file)
+        print(f'{timd_name} cached')
+
+        database.child("TIMDs").child(timd_name).set(decompressed_timd)
+        database.child("decompedTIMDs").child(timd_name).set(compressed_timd)
+        print(f'{timd_name} uploaded to Firebase')
+
+    return decompressed_timd
