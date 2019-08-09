@@ -41,7 +41,7 @@ except:
     exit(1)
 
 
-for tba_match in matches[:1]:
+for tba_match in matches:
     match = {
         'matchNumber': tba_match['match_number'],
         'redAllianceNumbers': [int(team[3:]) for team in tba_match['alliances']['red']['team_keys']],

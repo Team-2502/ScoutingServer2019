@@ -99,14 +99,7 @@ def true_offensive_contribution(timd):
         elif timd['header'].get('startLevel') == 'hab2':
             total_contribution += 6
     for action in timd.get('timeline', []):
-        if action.get('actionType') == 'climb':
-            if action.get('actualClimb') == 'level1':
-                total_contribution += 3
-            elif action.get('actualClimb') == 'level2':
-                total_contribution += 6
-            elif action.get('actualClimb') == 'level3':
-                total_contribution += 12
-        elif action.get('actionType') == 'place':
+        if action.get('actionType') == 'place':
             if action.get('actionPiece') == 'cargo':
                 total_contribution += 3
             elif action.get('actionPiece') == 'hatch':
