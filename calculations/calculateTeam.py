@@ -419,7 +419,8 @@ def calculate_team(team_number):
               'cyclesLevel2': len(cycles.filter_timeline_actions(timds, actionType='place', placeLevel='level2')),
               'cyclesLevel3': len(cycles.filter_timeline_actions(timds, actionType='place', placeLevel='level3')),
               'cyclesRocket': len(cycles.filter_timeline_actions(timds, actionType='place', actionPlace='rocket')),
-              'cyclesCargoShip': len(cycles.filter_timeline_actions(timds, actionType='place', actionPlace='cargoShip'))}
+              'cyclesCargoShip': len(cycles.filter_timeline_actions(timds, actionType='place', actionPlace='cargoShip')),
+              'timeDefending': sum([timd['calculated']['timeDefending'] for timd in timds])}
 
     for average_data_field, timd_data_field in TOTAL_AVERAGE_DATA_FIELDS.items():
         totals[average_data_field] = stats.avg([timd['calculated'].get(timd_data_field) for timd in timds])

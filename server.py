@@ -24,6 +24,7 @@ def reset_timds():
         database.child("rawTIMDs").child(timd.key()).set(timd.val())
         database.child("decompedTIMDs").child(timd.key()).remove()
 
+
 rawTIMDs = database.child('rawTIMDs').get()
 if rawTIMDs.val() is None:
     reset_timds()
@@ -33,5 +34,4 @@ for temp_timd in rawTIMDs.each():
     calculateTIMD.calculate_timd(temp_timd.val(), temp_timd.key())
     database.child("rawTIMDs").child(temp_timd.key()).remove()
     team_num = temp_timd.key().split("-")[1]
-    print(team_num)
     calculateTeam.calculate_team(team_num)

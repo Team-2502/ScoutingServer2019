@@ -7,7 +7,7 @@ def calculate_rankings(team_num, current_team):
     homeDir = os.path.expanduser('~')
     teams_json = [file for file in os.listdir(os.path.join(homeDir, 'ScoutingServer/cache/teams')) if file != '.DS_Store']
     teams = [json.loads(open(os.path.join(homeDir, 'ScoutingServer/cache/teams/', team)).read()) for team in teams_json if int(team.split('.')[0]) != team_num] + [current_team]
-    index = [team['teamNumber'] for team in teams].index(team_num)
+    index = [int(team['teamNumber']) for team in teams].index(team_num)
 
     rankings = {}
 
