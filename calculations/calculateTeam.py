@@ -397,8 +397,14 @@ SD_CYCLE_TIME_DATA_FIELDS = {
 }
 
 
+def get_team(team_number):
+    homeDir = os.path.expanduser('~')
+    teams = os.listdir(os.path.join(homeDir, 'ScoutingServer/cache/teams'))
+    return [json.loads(open(os.path.join(homeDir, 'ScoutingServer/cache/teams/', team)).read()) for team in teams if int(team.split('.')[0]) == team_number][0]
+
+
 def calculate_team(team_number):
-    team = {'teamNumber': team_number, 'defense': {}}
+    team = get_team(team_number)
 
     timds = get_timds(team_number)
     l3m_timds = sorted(timds, key=lambda timd: timd.get('matchNumber'))[-3:]
