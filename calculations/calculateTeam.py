@@ -436,7 +436,7 @@ def calculate_team(team_number):
     for l3m_average_data_field, timd_data_field in L3M_AVERAGE_DATA_FIELDS.items():
         l3ms[l3m_average_data_field] = stats.avg([timd['calculated'].get(timd_data_field) for timd in l3m_timds])
     for success_data_field, filters in PERCENT_SUCCESS_DATA_FIELDS.items():
-        l3ms[success_data_field] = stats.percent_success_place(l3m_timds, **filters)
+        l3ms['l3ms' + success_data_field] = stats.percent_success_place(l3m_timds, **filters)
     team['l3ms'] = l3ms
 
     p75s = {}

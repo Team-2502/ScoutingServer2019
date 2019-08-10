@@ -8,13 +8,15 @@ import sensitiveInfo
 def get_team(team_number):
     homeDir = os.path.expanduser('~')
     teams = os.listdir(os.path.join(homeDir, 'ScoutingServer/cache/teams'))
-    return [json.loads(open(os.path.join(homeDir, 'ScoutingServer/cache/teams/', team)).read()) for team in teams if int(team.split('.')[0]) == team_number][0]
+    try:
+        return [json.loads(open(os.path.join(homeDir, 'ScoutingServer/cache/teams/', team)).read()) for team in teams if int(team.split('.')[0]) == team_number][0]
+    except IndexError:
+        return None
 
 
 def find_likely_defender(teams):
     sortedDefense = [team for team in sorted(teams, key=lambda i: i['totals']['timeDefending'], reverse=True)]
     nonZeroDefense = [team for team in teams if team['totals']['timeDefending'] > 15]
-    print([team['teamNumber'] for team in nonZeroDefense])
     if len(nonZeroDefense) == 0:
         return None
     elif len(nonZeroDefense) == 1:
@@ -49,6 +51,8 @@ def get_matches():
         }
         match['redTeams'] = [get_team(team_number) for team_number in match['redAllianceNumbers']]
         match['blueTeams'] = [get_team(team_number) for team_number in match['blueAllianceNumbers']]
+        if None in match['redTeams'] or None in match['blueTeams']:
+            break
         match['redTopScorer'] = [int(team['teamNumber']) for team in sorted(match['redTeams'], key=lambda i: i['totals']['avgTOC'], reverse=True)][0]
         match['blueTopScorer'] = [int(team['teamNumber']) for team in sorted(match['blueTeams'], key=lambda i: i['totals']['avgTOC'], reverse=True)][0]
         match['redLikelyDefender'] = find_likely_defender(match['redTeams'])
@@ -62,4 +66,6 @@ def get_matches():
         'redWinPercentage',
         'blueWinPercentage'
         """
-        print(match)
+
+get_matches()
+# TODO check if match is able to be calced fully ie if all teams have played
