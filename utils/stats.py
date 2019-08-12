@@ -110,3 +110,7 @@ def true_offensive_contribution(timd):
                     total_contribution += 2
 
     return total_contribution
+
+
+def sum_sd(SDs):
+    return sum(map(lambda x: x ** 2 , filter(lambda s: s != None, SDs))) ** 0.5

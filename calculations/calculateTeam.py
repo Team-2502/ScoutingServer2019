@@ -400,7 +400,7 @@ SD_CYCLE_TIME_DATA_FIELDS = {
 def get_team(team_number):
     homeDir = os.path.expanduser('~')
     teams = os.listdir(os.path.join(homeDir, 'ScoutingServer/cache/teams'))
-    return [json.loads(open(os.path.join(homeDir, 'ScoutingServer/cache/teams/', team)).read()) for team in teams if int(team.split('.')[0]) == team_number][0]
+    return [json.loads(open(os.path.join(homeDir, 'ScoutingServer/cache/teams/', team)).read()) for team in teams if int(team.split('.')[0]) == int(team_number)][0]
 
 
 def calculate_team(team_number):
@@ -408,7 +408,7 @@ def calculate_team(team_number):
 
     timds = get_timds(team_number)
     l3m_timds = sorted(timds, key=lambda timd: timd.get('matchNumber'))[-3:]
-    team['timds']: get_timds(team_number)
+    team['timds'] = get_timds(team_number)
 
     team_abilities = {}
     team_abilities['groundCargoPickup'] = True if len(cycles.filter_timeline_actions(timds, actionType='intake', actionPiece='cargo')) > 0 else False
@@ -417,6 +417,7 @@ def calculate_team(team_number):
     team_abilities['climbHab3'] = True if len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level3')) > 0 else False
     team_abilities['placeLevel2'] = True if len(cycles.filter_timeline_actions(timds, actionType='place', placeLevel='level2')) > 0 else False
     team_abilities['placeLevel3'] = True if len(cycles.filter_timeline_actions(timds, actionType='place', placeLevel='level3')) > 0 else False
+    team_abilities['startLevel2'] = True if len([timd for timd in timds if timd['header']['startLevel'] == 'hab2']) > 0 else False
     team['team_abilities'] = team_abilities
 
     totals = {'cargoPlaced': len(cycles.filter_timeline_actions(timds, actionType='place', actionPiece='cargo')),
@@ -463,11 +464,12 @@ def calculate_team(team_number):
     percentages['cargoPercentageOfCycles'] = sum([timd['calculated']['cargoScored'] for timd in timds]) / sum([timd['calculated']['totalCycles'] for timd in timds]) if sum([timd['calculated']['totalCycles'] for timd in timds]) != 0 else 0
     percentages['cargoPercentageOfCycles'] = round(100 * (1 - percentages['cargoPercentageOfCycles']))
 
+    percentages['leftHab'] = round(100 * (len([timd for timd in timds if timd['header']['leftHab']]) / len([timds])))
+
     team['percentages'] = percentages
     # percent defense
     # percent incap
     # percent no show
-    # percent left hab
     # percent climbed
     # percent climb succeeded
 
