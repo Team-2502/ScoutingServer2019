@@ -114,3 +114,7 @@ def true_offensive_contribution(timd):
 
 def sum_sd(SDs):
     return sum(map(lambda x: x ** 2 , filter(lambda s: s != None, SDs))) ** 0.5
+
+
+def percent_difference(num1, num2):
+    return (num1-num2) / avg([num1, num2])

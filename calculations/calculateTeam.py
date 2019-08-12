@@ -13,6 +13,7 @@ TOTAL_AVERAGE_DATA_FIELDS = {
     'avgHatchesScoredSandstorm': 'hatchScoredSS',
     'avgCargoTeleop': 'cargoScoredTeleop',
     'avgHatchTeleop': 'hatchScoredTeleop',
+    'avgTotalTeleopCycles': 'totalTeleopCycles',
     'avgCargoScoredL1': 'cargoScoredLevel1',
     'avgCargoScoredL2': 'cargoScoredLevel2',
     'avgCargoScoredL3': 'cargoScoredLevel3',
