@@ -407,8 +407,14 @@ def calculate_team(team_number):
     team = get_team(team_number)
 
     timds = get_timds(team_number)
+    team['timds'] = timds
+
+    num_matches = len(timds)
+    num_no_shows = len([timd for timd in timds if timd['header']['isNoShow']])
+
+    timds = [timd for timd in timds if  not timd['header']['isNoShow']]
+
     l3m_timds = sorted(timds, key=lambda timd: timd.get('matchNumber'))[-3:]
-    team['timds'] = get_timds(team_number)
 
     team_abilities = {}
     team_abilities['groundCargoPickup'] = True if len(cycles.filter_timeline_actions(timds, actionType='intake', actionPiece='cargo')) > 0 else False
@@ -427,7 +433,8 @@ def calculate_team(team_number):
               'cyclesLevel3': len(cycles.filter_timeline_actions(timds, actionType='place', placeLevel='level3')),
               'cyclesRocket': len(cycles.filter_timeline_actions(timds, actionType='place', actionPlace='rocket')),
               'cyclesCargoShip': len(cycles.filter_timeline_actions(timds, actionType='place', actionPlace='cargoShip')),
-              'timeDefending': sum([timd['calculated']['timeDefending'] for timd in timds])}
+              'timeDefending': sum([timd['calculated']['timeDefending'] for timd in timds]),
+              'timeIncap': sum([timd['calculated']['timeIncap'] for timd in timds])}
 
     for average_data_field, timd_data_field in TOTAL_AVERAGE_DATA_FIELDS.items():
         totals[average_data_field] = stats.avg([timd['calculated'].get(timd_data_field) for timd in timds])
@@ -464,14 +471,21 @@ def calculate_team(team_number):
     percentages['cargoPercentageOfCycles'] = sum([timd['calculated']['cargoScored'] for timd in timds]) / sum([timd['calculated']['totalCycles'] for timd in timds]) if sum([timd['calculated']['totalCycles'] for timd in timds]) != 0 else 0
     percentages['cargoPercentageOfCycles'] = round(100 * (1 - percentages['cargoPercentageOfCycles']))
 
-    percentages['leftHab'] = round(100 * (len([timd for timd in timds if timd['header']['leftHab']]) / len([timds])))
+    percentages['leftHab'] = round(100 * (len([timd for timd in timds if timd['header']['leftHab']]) / len(timds)))
+
+    percentages['hab3ClimbSuccessRate'] = round(100 * (len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level3')) / len(cycles.filter_timeline_actions(timds, actionType='climb', attemptedClimb='level3'))))
+    percentages['hab2ClimbSuccessRate'] = round(100 * (len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level2')) / len(cycles.filter_timeline_actions(timds, actionType='climb', attemptedClimb='level2'))))
+    percentages['percentMatchesClimbHab3'] = round(100 * (len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level3')) / len(timds)))
+    percentages['percentMatchesClimbHab2'] = round(100 * (len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level2')) / len(timds)))
+    percentages['percentMatchesClimbHab1'] = round(100 * (len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level1')) / len(timds)))
+
+    percentages['percentOfTotalTeleopDefending'] = round(100 * (team['totals']['timeDefending'] / (len(timds) * 135)))
+
+    percentages['percentOfTimeIncap'] = round(100 * (team['totals']['timeIncap'] / (len(timds) * 150)))
+
+    percentages['percentOfMatchesNoShow'] = round(100 * (num_no_shows / num_matches))
 
     team['percentages'] = percentages
-    # percent defense
-    # percent incap
-    # percent no show
-    # percent climbed
-    # percent climb succeeded
 
     cycle_times = {}
     for average_cycle_data_field, filters in AVERAGE_CYCLE_TIME_DATA_FIELDS.items():
