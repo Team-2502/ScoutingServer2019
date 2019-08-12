@@ -473,8 +473,8 @@ def calculate_team(team_number):
 
     percentages['leftHab'] = round(100 * (len([timd for timd in timds if timd['header']['leftHab']]) / len(timds)))
 
-    percentages['hab3ClimbSuccessRate'] = round(100 * (len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level3')) / len(cycles.filter_timeline_actions(timds, actionType='climb', attemptedClimb='level3'))))
-    percentages['hab2ClimbSuccessRate'] = round(100 * (len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level2')) / len(cycles.filter_timeline_actions(timds, actionType='climb', attemptedClimb='level2'))))
+    percentages['hab3ClimbSuccessRate'] = round(100 * (len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level3')) / len(cycles.filter_timeline_actions(timds, actionType='climb', attemptedClimb='level3')))) if len(cycles.filter_timeline_actions(timds, actionType='climb', attemptedClimb='level3')) != 0 else None
+    percentages['hab2ClimbSuccessRate'] = round(100 * (len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level2')) / len(cycles.filter_timeline_actions(timds, actionType='climb', attemptedClimb='level2')))) if len(cycles.filter_timeline_actions(timds, actionType='climb', attemptedClimb='level2')) != 0 else None
     percentages['percentMatchesClimbHab3'] = round(100 * (len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level3')) / len(timds)))
     percentages['percentMatchesClimbHab2'] = round(100 * (len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level2')) / len(timds)))
     percentages['percentMatchesClimbHab1'] = round(100 * (len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level1')) / len(timds)))
