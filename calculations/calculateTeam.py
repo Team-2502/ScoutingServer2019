@@ -33,21 +33,37 @@ TOTAL_AVERAGE_DATA_FIELDS = {
 L3M_AVERAGE_DATA_FIELDS = {
     'l3mCargoScored': 'cargoScored',
     'l3mHatchesScored': 'hatchesScored',
+    'l3mPiecesScoredRocket': 'piecesScoredRocket',
+    'l3mPiecesScoredCargoShip': 'piecesScoredCargoShip',
+    'l3mCargoScoredL1': 'cargoScoredLevel1',
+    'l3mCargoScoredL2': 'cargoScoredLevel2',
+    'l3mCargoScoredL3': 'cargoScoredLevel3',
+    'l3mHatchesScoredL1': 'hatchScoredLevel1',
+    'l3mHatchesScoredL2': 'hatchScoredLevel2',
+    'l3mHatchesScoredL3': 'hatchScoredLevel3',
     'l3mCargoDrops': 'cargoDropped',
     'l3mHatchDrops': 'hatchesDropped',
     'l3mTimeIncap': 'timeIncap',
     'l3mTimeClimbing': 'timeClimbing',
-    'l3mTimeDefending': 'timeDefending',
+    'l3mTimeDefending': 'timeDefending'
 }
 
 P75_DATA_FIELDS = {
     'p75CargoScored': 'cargoScored',
     'p75HatchesScored': 'hatchesScored',
+    'p75CargoTeleop': 'cargoScoredTeleop',
+    'p75HatchTeleop': 'hatchScoredTeleop',
     'p75CargoDrops': 'cargoDropped',
     'p75HatchDrops': 'hatchesDropped',
     'p75TimeIncap': 'timeIncap',
     'p75TimeClimbing': 'timeClimbing',
-    'p75TOC': 'trueOffensiveContribution'
+    'p75TOC': 'trueOffensiveContribution',
+    'p75PiecesScoredRocket': 'piecesScoredRocket',
+    'p75PiecesScoredCargoShip': 'piecesScoredCargoShip',
+    'p75CargoScoredL1': 'cargoScoredLevel1',
+    'p75HatchesScoredL1': 'hatchScoredLevel1',
+    'p75CargoScoredL3': 'cargoScoredLevel3',
+    'p75HatchesScoredL3': 'hatchScoredLevel3'
 }
 
 SD_DATA_FIELDS = {
@@ -418,13 +434,15 @@ def calculate_team(team_number):
     l3m_timds = sorted(timds, key=lambda timd: timd.get('matchNumber'))[-3:]
 
     team_abilities = {}
-    team_abilities['groundCargoPickup'] = True if len(cycles.filter_timeline_actions(timds, actionType='intake', actionPiece='cargo')) > 0 else False
-    team_abilities['groundHatchPickup'] = True if len(cycles.filter_timeline_actions(timds, actionType='intake', actionPiece='hatch')) > 0 else False
+    team_abilities['groundCargoPickup'] = True if len(cycles.filter_timeline_actions(timds, actionType='intake', actionPiece='cargo', actionPlace='ground')) > 0 else False
+    team_abilities['groundHatchPickup'] = True if len(cycles.filter_timeline_actions(timds, actionType='intake', actionPiece='hatch', actionPlace='ground')) > 0 else False
     team_abilities['climbHab2'] = True if len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level2')) > 0 else False
     team_abilities['climbHab3'] = True if len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level3')) > 0 else False
     team_abilities['placeLevel2'] = True if len(cycles.filter_timeline_actions(timds, actionType='place', placeLevel='level2')) > 0 else False
     team_abilities['placeLevel3'] = True if len(cycles.filter_timeline_actions(timds, actionType='place', placeLevel='level3')) > 0 else False
     team_abilities['startLevel2'] = True if len([timd for timd in timds if timd['header']['startLevel'] == 'hab2']) > 0 else False
+    team_abilities['placeHatch'] = True if len(cycles.filter_timeline_actions(timds, actionType='place', actionPiece='hatch')) > 0 else False
+    team_abilities['placeCargo'] = True if len(cycles.filter_timeline_actions(timds, actionType='place', actionPiece='cargo')) > 0 else False
     team['team_abilities'] = team_abilities
 
     totals = {'cargoPlaced': len(cycles.filter_timeline_actions(timds, actionType='place', actionPiece='cargo')),
@@ -472,6 +490,10 @@ def calculate_team(team_number):
     percentages['cargoPercentageOfCycles'] = sum([timd['calculated']['cargoScored'] for timd in timds]) / sum([timd['calculated']['totalCycles'] for timd in timds]) if sum([timd['calculated']['totalCycles'] for timd in timds]) != 0 else 0
     percentages['cargoPercentageOfCycles'] = round(100 * (1 - percentages['cargoPercentageOfCycles']))
 
+    percentages['percentMatchesStartHab1'] = len([timd for timd in timds if timd['header']['startLevel'] == 'hab1']) / len(timds)
+    percentages['percentMatchesStartHab1'] = round(100 * (1 - percentages['percentMatchesStartHab1']))
+    percentages['percentMatchesStartHab2'] = len([timd for timd in timds if timd['header']['startLevel'] == 'hab2']) / len(timds)
+    percentages['percentMatchesStartHab2'] = round(100 * (1 - percentages['percentMatchesStartHab2']))
     percentages['leftHab'] = round(100 * (len([timd for timd in timds if timd['header']['leftHab']]) / len(timds)))
 
     percentages['hab3ClimbSuccessRate'] = round(100 * (len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level3')) / len(cycles.filter_timeline_actions(timds, actionType='climb', attemptedClimb='level3')))) if len(cycles.filter_timeline_actions(timds, actionType='climb', attemptedClimb='level3')) != 0 else None

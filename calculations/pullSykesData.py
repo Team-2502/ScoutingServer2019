@@ -29,7 +29,7 @@ def get_sykes_data():
     wb = openpyxl.load_workbook(sykes_file)
     pred_contrib = wb['predicted contributions']
 
-    rows = [row for row in  pred_contrib.iter_rows(min_row=3, max_col=5, max_row= 3+len(teams), values_only=True)]
+    rows = [row for row in pred_contrib.iter_rows(min_row=3, max_col=5, max_row=3+len(teams), values_only=True)]
 
     for row in rows:
         team = {
