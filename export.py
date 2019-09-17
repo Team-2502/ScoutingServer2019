@@ -15,7 +15,7 @@ for team in teams:
         rankings = ([key for key in team['rankings'].keys()], 'rankings')
         team_abilities = ([key for key in team['team_abilities'].keys()], 'team_abilities')
         percentages = ([key for key in team['percentages'].keys()], 'percentages')
-        # sykes = ([key for key in team['sykesData'].keys()], 'sykes')
+        sykes = ([key for key in team['sykes'].keys()], 'sykes')
 
         cycles = ([key for key in team['cycle_times'].keys()], 'cycles')
 
@@ -62,7 +62,7 @@ for team in teams:
         team_sheet.title = str(team['teamNumber'])
 
         team_sheet['A1'] = team['teamNumber']
-        # team_sheet['A2'] = team['sykes']['teamName']
+        team_sheet['A2'] = team['sykes']['teamName']
 
         team_sheet['B4'] = team['pitscouting']['length']
         team_sheet['B5'] = team['pitscouting']['width']

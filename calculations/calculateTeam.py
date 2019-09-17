@@ -540,6 +540,7 @@ def calculate_team(team_number):
     database = firebase.database()
 
     team['pitscouting'] = dict(database.child("teams").child(team_number).child('pitscouting').get().val())
+    team['sykes'] = dict(database.child("teams").child(team_number).child('sykes').get().val())
 
     # Save data in local cache
     if not os.path.exists(os.path.join(homeDir, 'ScoutingServer/cache/teams')):

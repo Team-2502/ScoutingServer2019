@@ -1,7 +1,5 @@
 import openpyxl
 import os
-import json
-import tbapy
 import pyrebase
 
 import sensitiveInfo
@@ -9,10 +7,6 @@ import sensitiveInfo
 
 def get_sykes_data():
     homeDir = os.path.expanduser('~')
-
-    tba = tbapy.TBA(sensitiveInfo.tba_api_key())
-    event = "2019dar"
-    teams = [int(team['key'][3:]) for team in tba.event_teams(event)]
 
     pyrebase_config = {
         "apiKey": sensitiveInfo.firebase_api_key(),
@@ -25,29 +19,27 @@ def get_sykes_data():
     firebase = pyrebase.initialize_app(pyrebase_config)
     database = firebase.database()
 
-    sykes_file = os.path.join(homeDir, 'ScoutingServer/config/sykes.xlsm')
+    sykes_file = os.path.join(homeDir, 'ScoutingServer/config/sykes2.xlsx')
     wb = openpyxl.load_workbook(sykes_file)
-    pred_contrib = wb['predicted contributions']
+    pred_contrib = wb['Sheet1']
 
-    rows = [row for row in pred_contrib.iter_rows(min_row=3, max_col=5, max_row=3+len(teams), values_only=True)]
+    print("loaded")
+
+    rows = [row for row in pred_contrib.iter_rows(min_row=2, max_col=5, values_only=True)]
 
     for row in rows:
-        team = {
-            'teamNumber': row[0],
-            'sykesData': {
-                'teamName': row[1],
-                'elo': row[2],
-                'opr': row[4]
+        if not row[0]:
+            break
+        teamNumber = row[0]
+        sykesData = {
+            'teamName': row[1],
+            'elo': row[2],
+            'opr': row[4]
             }
-        }
-        team_number = team['teamNumber']
-        with open(os.path.join(homeDir, f'ScoutingServer/cache/teams/{team_number}.json'), 'w') as file:
-            json.dump(team, file)
-        print(f'{team_number} cached')
 
-        database.child("teams").child(team_number).set(team)
-        print(f'{team_number} uploaded to Firebase')
-    print('All team data pulled')
+        database.child("teams").child(teamNumber).child("sykes").set(sykesData)
+        print(f'{teamNumber} Sykes uploaded to Firebase')
+    print('All Sykes data pulled')
 
 
 if __name__ == '__main__':

@@ -23,7 +23,7 @@ def pullPitScoutingData():
     wb = openpyxl.load_workbook('pitscouting.xlsx')
     data = wb['Form Responses 1']
 
-    rows = [row for row in data.iter_rows(min_row=2, min_col=1, max_col=8, max_row=68, values_only=True)]
+    rows = [row for row in data.iter_rows(min_row=2, min_col=1, max_col=8, values_only=True)]
     for row in rows:
         if not row[1]:
             break
@@ -35,6 +35,7 @@ def pullPitScoutingData():
             }
         database.child("teams").child(teamNumber).child('pitscouting').set(pitscouting)
         print(f'{teamNumber} pitscouting uploaded to Firebase')
+    print("All pitscouting data pulled")
 
 
 if __name__ == '__main__':
