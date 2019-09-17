@@ -64,8 +64,8 @@ for team in teams:
         team_sheet['A1'] = team['teamNumber']
         # team_sheet['A2'] = team['sykes']['teamName']
 
-        # team_sheet['B4'] = team['pitscouting']['length']
-        # team_sheet['B5'] = team['pitscouting']['width']
+        team_sheet['B4'] = team['pitscouting']['length']
+        team_sheet['B5'] = team['pitscouting']['width']
         team_sheet['B6'] = team['team_abilities']['placeLevel2']
         team_sheet['B7'] = team['team_abilities']['placeLevel3']
         team_sheet['B8'] = team['team_abilities']['startLevel2']
@@ -73,9 +73,10 @@ for team in teams:
         team_sheet['B10'] = team['team_abilities']['climbHab3']
         team_sheet['B11'] = team['team_abilities']['placeCargo']
         team_sheet['B12'] = team['team_abilities']['placeHatch']
+        team_sheet['A13'] = team['pitscouting']['drivetrain']   # This is in A because it is merged with column B
 
-        team_sheet['B14'] = team['percentages']['percentOfTotalTeleopDefending']
-        team_sheet['B15'] = team['totals']['avgTimeClimbing']
+        team_sheet['B15'] = team['percentages']['percentOfTotalTeleopDefending']
+        team_sheet['B16'] = team['totals']['avgTimeClimbing']
 
         team_sheet['E5'] = team['cycle_times']['hatchL1']
         team_sheet['E6'] = team['cycle_times']['cargoL1']
@@ -108,7 +109,7 @@ for team in teams:
         team_sheet['K5'] = team['percentages']['percentMatchesClimbHab2']
         team_sheet['K6'] = team['percentages']['percentMatchesClimbHab3']
         team_sheet['K7'] = team['percentages']['hab3ClimbSuccessRate']
-        # team_sheet['K8'] = team['percentages']['hab2ClimbSuccessRate']
+        team_sheet['K8'] = team['percentages']['hab2ClimbSuccessRate']
 
         team_sheet['K14'] = team['percentages']['percentMatchesStartHab1']
         team_sheet['K15'] = team['percentages']['percentMatchesStartHab2']

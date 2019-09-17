@@ -1,5 +1,6 @@
 import sensitiveInfo
 from calculations import calculateTIMD, calculateTeam
+import pullPitscoutingData
 
 import os
 import pyrebase
@@ -24,6 +25,8 @@ def reset_timds():
         database.child("rawTIMDs").child(timd.key()).set(timd.val())
         database.child("decompedTIMDs").child(timd.key()).remove()
 
+
+pullPitscoutingData.pullPitScoutingData()
 
 rawTIMDs = database.child('rawTIMDs').get()
 if rawTIMDs.val() is None:

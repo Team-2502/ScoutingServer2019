@@ -539,6 +539,8 @@ def calculate_team(team_number):
     firebase = pyrebase.initialize_app(pyrebase_config)
     database = firebase.database()
 
+    team['pitscouting'] = dict(database.child("teams").child(team_number).child('pitscouting').get().val())
+
     # Save data in local cache
     if not os.path.exists(os.path.join(homeDir, 'ScoutingServer/cache/teams')):
         os.makedirs(os.path.join(homeDir, 'ScoutingServer/cache/teams'))
