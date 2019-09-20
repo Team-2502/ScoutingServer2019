@@ -3,7 +3,7 @@ import json
 import os
 
 homeDir = os.path.expanduser('~')
-teams = [json.loads(open(os.path.join(homeDir, 'ScoutingServer/cache/teams/', team)).read()) for team in os.listdir(os.path.join(homeDir, 'ScoutingServer/cache/teams')) if team != '.DS_Store']
+teams = [json.loads(open(os.path.join(homeDir, 'EMCC-2019Server/cache/teams/', team)).read()) for team in os.listdir(os.path.join(homeDir, 'EMCC-2019Server/cache/teams')) if team != '.DS_Store']
 
 current_row = 2
 for team in teams:

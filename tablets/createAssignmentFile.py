@@ -10,12 +10,12 @@ homeDir = os.path.expanduser('~')
 
 # Firebase setup
 pyrebase_config = {
-    "apiKey": sensitiveInfo.firebase_api_key(),
-    "authDomain": "offseasondds.firebaseapp.com",
-    "databaseURL": "https://offseasondds.firebaseio.com",
-    "storageBucket": "offseasondds.appspot.com",
-    "serviceAccount": os.path.join(homeDir, "ScoutingData/config/offseasondds-3695dd827748.json")
-}
+        "apiKey": sensitiveInfo.firebase_api_key(),
+        "authDomain": "emcc2019-fb7dd.firebaseapp.com",
+        "databaseURL": "https://emcc2019-fb7dd.firebaseio.com",
+        "storageBucket": "emcc2019-fb7dd.appspot.com",
+        "serviceAccount": os.path.join(homeDir, "EMCC-2019Server/config/emcc2019-fb7dd-8de616e8bc8c.json")
+    }
 firebase = pyrebase.initialize_app(pyrebase_config)
 auth = firebase.auth()
 user = auth.sign_in_with_email_and_password(sensitiveInfo.firebase_email(), sensitiveInfo.firebase_password())
@@ -58,10 +58,10 @@ for match in matches:
     full_assignments["QM "+str(match_num)] = assignments
 
 # Save file as json and txt
-with open(os.path.join(homeDir, 'ScoutingServer/assignments/BackupAssignments.json'), 'w') as f:
+with open(os.path.join(homeDir, 'EMCC-2019Server/assignments/BackupAssignments.json'), 'w') as f:
     json.dump(full_assignments, f)
 
-with open(os.path.join(homeDir, 'ScoutingServer/assignments/BackupAssignments.txt'), 'w') as f:
+with open(os.path.join(homeDir, 'EMCC-2019Server/assignments/BackupAssignments.txt'), 'w') as f:
     f.write(json.dumps(full_assignments))
 
 # Upload assignments to Firebase

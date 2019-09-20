@@ -416,8 +416,8 @@ SD_CYCLE_TIME_DATA_FIELDS = {
 
 def get_team(team_number):
     homeDir = os.path.expanduser('~')
-    teams = os.listdir(os.path.join(homeDir, 'ScoutingServer/cache/teams'))
-    return [json.loads(open(os.path.join(homeDir, 'ScoutingServer/cache/teams/', team)).read()) for team in teams if int(team.split('.')[0]) == int(team_number)][0]
+    teams = os.listdir(os.path.join(homeDir, 'EMCC-2019Server/cache/teams'))
+    return [json.loads(open(os.path.join(homeDir, 'EMCC-2019Server/cache/teams/', team)).read()) for team in teams if int(team.split('.')[0]) == int(team_number)][0]
 
 
 def calculate_team(team_number):
@@ -530,10 +530,10 @@ def calculate_team(team_number):
 
     pyrebase_config = {
         "apiKey": sensitiveInfo.firebase_api_key(),
-        "authDomain": "offseasondds.firebaseapp.com",
-        "databaseURL": "https://offseasondds.firebaseio.com",
-        "storageBucket": "offseasondds.appspot.com",
-        "serviceAccount": os.path.join(homeDir, "ScoutingServer/config/offseasondds-3695dd827748.json")
+        "authDomain": "emcc2019-fb7dd.firebaseapp.com",
+        "databaseURL": "https://emcc2019-fb7dd.firebaseio.com",
+        "storageBucket": "emcc2019-fb7dd.appspot.com",
+        "serviceAccount": os.path.join(homeDir, "EMCC-2019Server/config/emcc2019-fb7dd-8de616e8bc8c.json")
     }
 
     firebase = pyrebase.initialize_app(pyrebase_config)
@@ -543,10 +543,10 @@ def calculate_team(team_number):
     team['sykes'] = dict(database.child("teams").child(team_number).child('sykes').get().val())
 
     # Save data in local cache
-    if not os.path.exists(os.path.join(homeDir, 'ScoutingServer/cache/teams')):
-        os.makedirs(os.path.join(homeDir, 'ScoutingServer/cache/teams'))
+    if not os.path.exists(os.path.join(homeDir, 'EMCC-2019Server/cache/teams')):
+        os.makedirs(os.path.join(homeDir, 'EMCC-2019Server/cache/teams'))
 
-    with open(os.path.join(homeDir, f'ScoutingServer/cache/teams/{team_number}.json'), 'w') as file:
+    with open(os.path.join(homeDir, f'EMCC-2019Server/cache/teams/{team_number}.json'), 'w') as file:
         json.dump(team, file)
     print(f'{team_number} cached')
 
@@ -556,8 +556,8 @@ def calculate_team(team_number):
 
 def get_timds(team_number):
     homeDir = os.path.expanduser('~')
-    TIMDs = [timd for timd in os.listdir(os.path.join(homeDir, 'ScoutingServer/cache/TIMDs')) if timd != '.DS_Store']
-    return [json.loads(open(os.path.join(homeDir, 'ScoutingServer/cache/TIMDs/', TIMD)).read()) for TIMD in TIMDs if int(TIMD.split('-')[1]) == int(team_number)]
+    TIMDs = [timd for timd in os.listdir(os.path.join(homeDir, 'EMCC-2019Server/cache/TIMDs')) if timd != '.DS_Store']
+    return [json.loads(open(os.path.join(homeDir, 'EMCC-2019Server/cache/TIMDs/', TIMD)).read()) for TIMD in TIMDs if int(TIMD.split('-')[1]) == int(team_number)]
 
 
 if __name__ == '__main__':
