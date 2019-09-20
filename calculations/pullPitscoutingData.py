@@ -1,6 +1,5 @@
 import openpyxl
 import os
-import json
 import pyrebase
 
 import sensitiveInfo
@@ -20,7 +19,8 @@ def pullPitScoutingData():
     firebase = pyrebase.initialize_app(pyrebase_config)
     database = firebase.database()
 
-    wb = openpyxl.load_workbook('pitscouting.xlsx')
+    pit_file = os.path.join(homeDir, 'ScoutingServer/config/pitscouting.xlsx')
+    wb = openpyxl.load_workbook(pit_file)
     data = wb['Form Responses 1']
 
     rows = [row for row in data.iter_rows(min_row=2, min_col=1, max_col=8, values_only=True)]
