@@ -420,18 +420,22 @@ def get_team(team_number):
     return [json.loads(open(os.path.join(homeDir, 'EMCC-2019Server/cache/teams/', team)).read()) for team in teams if int(team.split('.')[0]) == int(team_number)][0]
 
 
-def calculate_team(team_number):
-    team = get_team(team_number)
+def calculate_team(team_number, last_timd):
+    try:
+        team = get_team(team_number)
+        timds = get_timds(team_number)
+    except IndexError:
+        team = {'teamNumber': last_timd['team_number']}
+        timds = [last_timd]
 
-    timds = get_timds(team_number)
     team['timds'] = timds
 
     num_matches = len(timds)
     num_no_shows = len([timd for timd in timds if timd['header']['isNoShow']])
 
-    timds = [timd for timd in timds if  not timd['header']['isNoShow']]
+    timds = [timd for timd in timds if not timd['header']['isNoShow']]
 
-    l3m_timds = sorted(timds, key=lambda timd: timd.get('matchNumber'))[-3:]
+    l3m_timds = sorted(timds, key=lambda timd: timd['header']['matchNumber'])[-3:]
 
     team_abilities = {}
     team_abilities['groundCargoPickup'] = True if len(cycles.filter_timeline_actions(timds, actionType='intake', actionPiece='cargo', actionPlace='ground')) > 0 else False
@@ -540,7 +544,7 @@ def calculate_team(team_number):
     database = firebase.database()
 
     team['pitscouting'] = dict(database.child("teams").child(team_number).child('pitscouting').get().val())
-    team['sykes'] = dict(database.child("teams").child(team_number).child('sykes').get().val())
+    #team['sykes'] = dict(database.child("teams").child(team_number).child('sykes').get().val())
 
     # Save data in local cache
     if not os.path.exists(os.path.join(homeDir, 'EMCC-2019Server/cache/teams')):

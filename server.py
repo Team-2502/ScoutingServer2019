@@ -45,13 +45,14 @@ def run_server_comp():
     while True:
         rawTIMDs = database.child('rawTIMDs').get()
         if rawTIMDs.val() is None:
-            time.sleep(5000)
+            time.sleep(5)
+            print("wow")
         else:
             for temp_timd in rawTIMDs.each():
-                calculateTIMD.calculate_timd(temp_timd.val(), temp_timd.key())
+                timd = calculateTIMD.calculate_timd(temp_timd.val(), temp_timd.key())
                 database.child("rawTIMDs").child(temp_timd.key()).remove()
                 team_num = temp_timd.key().split("-")[1]
-                calculateTeam.calculate_team(team_num)
+                calculateTeam.calculate_team(team_num, timd)
 
 
 if __name__ == "__main__":

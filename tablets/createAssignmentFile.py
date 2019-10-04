@@ -17,13 +17,11 @@ pyrebase_config = {
         "serviceAccount": os.path.join(homeDir, "EMCC-2019Server/config/emcc2019-fb7dd-8de616e8bc8c.json")
     }
 firebase = pyrebase.initialize_app(pyrebase_config)
-auth = firebase.auth()
-user = auth.sign_in_with_email_and_password(sensitiveInfo.firebase_email(), sensitiveInfo.firebase_password())
 database = firebase.database()
 
 # Setup for tbapy
 tba = tbapy.TBA(sensitiveInfo.tba_api_key())
-event = "2019dar"
+event = "2019emcc"
 
 # Get a list of all qualifying matches at an event
 try:
