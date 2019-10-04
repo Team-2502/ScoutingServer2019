@@ -420,13 +420,17 @@ def get_team(team_number):
     return [json.loads(open(os.path.join(homeDir, 'EMCC-2019Server/cache/teams/', team)).read()) for team in teams if int(team.split('.')[0]) == int(team_number)][0]
 
 
-def calculate_team(team_number, last_timd):
-    try:
-        team = get_team(team_number)
+def calculate_team(team_number, last_timd, json=False):
+    if json is not False:
+        team = json
         timds = get_timds(team_number)
-    except IndexError:
-        team = {'teamNumber': last_timd['team_number']}
-        timds = [last_timd]
+    else:
+        try:
+            team = get_team(team_number)
+            timds = get_timds(team_number)
+        except IndexError:
+            team = {'teamNumber': last_timd['team_number']}
+            timds = [last_timd]
 
     team['timds'] = timds
 
@@ -540,22 +544,23 @@ def calculate_team(team_number, last_timd):
         "serviceAccount": os.path.join(homeDir, "EMCC-2019Server/config/emcc2019-fb7dd-8de616e8bc8c.json")
     }
 
-    firebase = pyrebase.initialize_app(pyrebase_config)
-    database = firebase.database()
+    if json is False:
+        firebase = pyrebase.initialize_app(pyrebase_config)
+        database = firebase.database()
 
-    team['pitscouting'] = dict(database.child("teams").child(team_number).child('pitscouting').get().val())
-    #team['sykes'] = dict(database.child("teams").child(team_number).child('sykes').get().val())
+        team['pitscouting'] = dict(database.child("teams").child(team_number).child('pitscouting').get().val())
+        #team['sykes'] = dict(database.child("teams").child(team_number).child('sykes').get().val())
 
-    # Save data in local cache
-    if not os.path.exists(os.path.join(homeDir, 'EMCC-2019Server/cache/teams')):
-        os.makedirs(os.path.join(homeDir, 'EMCC-2019Server/cache/teams'))
+        # Save data in local cache
+        if not os.path.exists(os.path.join(homeDir, 'EMCC-2019Server/cache/teams')):
+            os.makedirs(os.path.join(homeDir, 'EMCC-2019Server/cache/teams'))
 
-    with open(os.path.join(homeDir, f'EMCC-2019Server/cache/teams/{team_number}.json'), 'w') as file:
-        json.dump(team, file)
-    print(f'{team_number} cached')
+        with open(os.path.join(homeDir, f'EMCC-2019Server/cache/teams/{team_number}.json'), 'w') as file:
+            json.dump(team, file)
+        print(f'{team_number} cached')
 
-    database.child("teams").child(team_number).set(team)
-    print(f'{team_number} uploaded to Firebase')
+        database.child("teams").child(team_number).set(team)
+        print(f'{team_number} uploaded to Firebase')
 
 
 def get_timds(team_number):

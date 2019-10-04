@@ -28,7 +28,7 @@ class TestCalculateTIMD(unittest.TestCase):
         self.assertEqual(self.timd['calculated']['cargoPlaceSuccessRate'], 100)
 
     def testTrueOffensiveContribution(self):
-        self.assertEqual(self.timd['calculated']['trueOffensiveContribution'], 107)
+        self.assertEqual(self.timd['calculated']['trueOffensiveContribution'], 95)
 
     def testUndefendedHatchCycleTimes(self):
         self.assertEqual(self.timd['calculated']['undefendedHatchAverageCycleTime'], 1.6)
