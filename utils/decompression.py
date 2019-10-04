@@ -94,8 +94,11 @@ def decompress_timd(temp_timd):
     decompressed_header = decompress_header(header)
     team_number = decompressed_header.get('teamNumber')
     match_number = decompressed_header.get('matchNumber')
-    decompressed_timeline = decompress_timeline(timeline)
-    decompressed_timd = {'header': decompressed_header, 'timeline': decompressed_timeline, 'team_number': team_number, 'match_number': match_number}
+    if decompressed_header.get('isNoShow'):
+        decompressed_timd = {'header': decompressed_header, 'team_number': team_number, 'match_number': match_number}
+    else:
+        decompressed_timeline = decompress_timeline(timeline)
+        decompressed_timd = {'header': decompressed_header, 'timeline': decompressed_timeline, 'team_number': team_number, 'match_number': match_number}
     return decompressed_timd
 
 
