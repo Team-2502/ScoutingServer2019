@@ -44,10 +44,10 @@ for team in teams:
         team_sheet.title = str(team['teamNumber'])
 
         team_sheet['A1'] = team['teamNumber']
-        #team_sheet['A2'] = team['sykes']['teamName']
+        team_sheet['A2'] = team['sykes']['teamName']
 
-        #team_sheet['B4'] = team['pitscouting']['length']
-        #team_sheet['B5'] = team['pitscouting']['width']
+        team_sheet['B4'] = "-"         # team['pitscouting']['length']
+        team_sheet['B5'] = "-"         # team['pitscouting']['width']
         team_sheet['B6'] = team['team_abilities']['placeLevel2']
         team_sheet['B7'] = team['team_abilities']['placeLevel3']
         team_sheet['B8'] = team['team_abilities']['startLevel2']

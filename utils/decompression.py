@@ -21,7 +21,8 @@ TEMP_TIMD_COMP_KEYS = {
     'T': 'isDoubleClimb',
     'U': 'isTripleClimb',
     'V': 'assistedAnotherClimb',
-    'W': 'wasAssistedClimb'
+    'W': 'wasAssistedClimb',
+    'X': 'cause'
 }
 TEMP_TIMD_COMP_VALUES = {
     't': True,
@@ -57,13 +58,34 @@ TEMP_TIMD_COMP_VALUES = {
     'ae': 'climb',
     'af': 'offense',
     'ag': 'defense',
+    "ah": 'double placed',
+    "ai": 'stuckOnCargo',
+    "aj": 'disabled',
+    "ak": 'tippedOver',
+    "al": 'other'
 }
 SCOUT_NAME_VALUES = {
-    "a": "Ryan A",
-    "b": "Evan L",
-    "c": "Ritik M",
-    "d": "Ravisha J",
-    "e": "Ishan S"
+    "a": "Adhi",
+    "b": "Big Chief",
+    "c": "Christian",
+    "d": "Christopher",
+    "e": "Danny",
+    "f": "Drew",
+    "g": "Evan",
+    "s": "Isaac A",
+    "p": "Ishan",
+    "r": "Justin",
+    "h": "Kyle",
+    "q": "Michael",
+    "t": "Miguel",
+    "i": "Nathan",
+    "j": "Neel",
+    "k": "Nigel",
+    "l": "Ravisha",
+    "m": "Riley",
+    "n": "Ritik",
+    "o": "Ryan",
+    "u": "Other"
 }
 
 
