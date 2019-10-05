@@ -42,7 +42,7 @@ class TestCalculateTeam(unittest.TestCase):
         self.assertEqual(self.team['l3ms']['l3mTimeDefending'], 4.0)
 
     def testp75sTimeline(self):
-        self.assertEqual(self.team['p75s']['p75CargoScored'], 2.5)
+        self.assertEqual(self.team['p75s']['p75CargoScored'], 2.2)
 
     def testSDTimeline(self):
         self.assertEqual(self.team['SDs']['SDCargoScored'], 1.3)

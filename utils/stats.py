@@ -46,6 +46,7 @@ def p75(lis, exception=0.0, cycles=False):
     if len(lis) == 0:
         return exception
     else:
+        lis.sort()
         # If the cycles specifcation is true, it takes the lower half of
         # the list, which are the faster cycle times.
         if cycles is True:
