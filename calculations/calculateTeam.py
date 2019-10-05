@@ -423,7 +423,8 @@ def get_team(team_number):
 def calculate_team(team_number, last_timd, json=False):
     if json is not False:
         team = json
-        timds = get_timds(team_number)
+        timds = team['timds']
+
     else:
         try:
             team = get_team(team_number)
@@ -432,7 +433,7 @@ def calculate_team(team_number, last_timd, json=False):
             team = {'teamNumber': last_timd['team_number']}
             timds = [last_timd]
 
-    team['timds'] = timds
+        team['timds'] = timds
 
     num_matches = len(timds)
     num_no_shows = len([timd for timd in timds if timd['header']['isNoShow']])
@@ -562,6 +563,7 @@ def calculate_team(team_number, last_timd, json=False):
         database.child("teams").child(team_number).set(team)
         print(f'{team_number} uploaded to Firebase')
 
+    return team
 
 def get_timds(team_number):
     homeDir = os.path.expanduser('~')
