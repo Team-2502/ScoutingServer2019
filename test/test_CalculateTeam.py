@@ -36,10 +36,7 @@ class TestCalculateTeam(unittest.TestCase):
         self.assertEqual(self.team['totals']['avgCargoScoredL1'], 1.1)
 
     def testL3MsAveragesTimeline(self):
-        self.assertEqual(self.team['l3ms']['l3mCargoScoredL1'], 1.0)
-
-    def testL3MsAveragesDefense(self):
-        self.assertEqual(self.team['l3ms']['l3mTimeDefending'], 4.0)
+        self.assertEqual(self.team['l3ms']['l3mHatchesScoredL1'], 1.7)
 
     def testp75sTimeline(self):
         self.assertEqual(self.team['p75s']['p75CargoScored'], 2.2)

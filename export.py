@@ -44,7 +44,7 @@ for team in teams:
         team_sheet.title = str(team['teamNumber'])
 
         team_sheet['A1'] = team['teamNumber']
-        team_sheet['A2'] = team['sykes']['teamName']
+        team_sheet['A2'] = "-"         # team['sykes']['teamName']
 
         team_sheet['B4'] = "-"         # team['pitscouting']['length']
         team_sheet['B5'] = "-"         # team['pitscouting']['width']

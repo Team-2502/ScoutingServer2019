@@ -47,7 +47,7 @@ def p75(lis, exception=0.0, cycles=False):
         return exception
     else:
         lis.sort()
-        # If the cycles specifcation is true, it takes the lower half of
+        # If the cycles argument is true, it takes the lower half of
         # the list, which are the faster cycle times.
         if cycles is True:
             # 'math.ceil()' rounds the float up to be an int.
