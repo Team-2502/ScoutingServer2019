@@ -1,6 +1,60 @@
 import openpyxl
+from openpyxl.styles import Font, Border, Side
+from openpyxl.utils import get_column_letter
 import json
 import os
+
+
+def xlref(row, column, zero_indexed=False):
+    """https://stackoverflow.com/a/37713627"""
+    if zero_indexed:
+        row += 1
+        column += 1
+    return get_column_letter(column) + str(row)
+
+
+def set_border(ws, cell_range):
+    """https://stackoverflow.com/a/34521257"""
+    rows = ws[cell_range]
+    side = Side(border_style='thin', color="FF000000")
+
+    rows = list(rows)  # we convert iterator to list for simplicity, but it's not memory efficient solution
+    max_y = len(rows) - 1  # index of the last row
+    for pos_y, cells in enumerate(rows):
+        max_x = len(cells) - 1  # index of the last cell
+        for pos_x, cell in enumerate(cells):
+            border = Border(
+                left=cell.border.left,
+                right=cell.border.right,
+                top=cell.border.top,
+                bottom=cell.border.bottom
+            )
+            if pos_x == 0:
+                border.left = side
+            if pos_x == max_x:
+                border.right = side
+            if pos_y == 0:
+                border.top = side
+            if pos_y == max_y:
+                border.bottom = side
+
+            # set new border only if it's one of the edge cells
+            if pos_x == 0 or pos_x == max_x or pos_y == 0 or pos_y == max_y:
+                cell.border = border
+
+
+def fill_with_borders(ws, cell_range):
+    """https://stackoverflow.com/a/43109804"""
+    border = Border(left=Side(border_style='thin', color='000000'),
+                right=Side(border_style='thin', color='000000'),
+                top=Side(border_style='thin', color='000000'),
+                bottom=Side(border_style='thin', color='000000'))
+
+    rows = ws[cell_range]
+    for row in rows:
+        for cell in row:
+            cell.border = border
+
 
 homeDir = os.path.expanduser('~')
 teams = [json.loads(open(os.path.join(homeDir, 'EMCC-2019Server/cache/teams/', team)).read()) for team in os.listdir(os.path.join(homeDir, 'EMCC-2019Server/cache/teams')) if team != '.DS_Store']
@@ -19,7 +73,12 @@ headers = [totals, l3ms, SDs, maxes, rankings, team_abilities, percentages, cycl
 
 
 wb = openpyxl.load_workbook('paly_from_8th.xlsx')
-ws = wb['Raw Export']
+
+for sheet in wb.worksheets:
+    if sheet.title != 'Team Template':
+        wb.remove(sheet)
+
+ws = wb.create_sheet('Raw Export')
 ws.cell(row=1, column=1).value = 'Number'
 
 current_column = 2
@@ -55,7 +114,7 @@ for team in teams:
         team_sheet['B10'] = team['team_abilities']['climbHab3']
         team_sheet['B11'] = team['team_abilities']['placeCargo']
         team_sheet['B12'] = team['team_abilities']['placeHatch']
-        team_sheet['A13'] = team['pitscouting']['drivetrain']   # This is in A because it is merged with column B
+        team_sheet['A13'] = "-" # team['pitscouting']['drivetrain']   # This is in A because it is merged with column B
 
         team_sheet['B15'] = team['percentages']['percentOfTotalTeleopDefending']
         team_sheet['B16'] = team['totals']['avgTimeClimbing']
@@ -112,6 +171,66 @@ for team in teams:
         team_sheet['N15'] = team['cycle_times']['l3mHatchDefended']
         team_sheet['N15'] = team['cycle_times']['l3mCargoDefended']
         team_sheet['N15'] = team['cycle_times']['l3mCargoUndefended']
+
+        matches_row = 22
+        matches_column = 1
+
+        matches_displayed = 0
+
+        for timd in sorted(team['timds'], key=lambda timd_: timd_['header']['matchNumber']):
+            set_border(team_sheet, xlref(matches_row, matches_column) + ":" + xlref(matches_row + 10, matches_column + 4))
+            team_sheet.cell(column=matches_column, row=matches_row, value="QM " + str(timd['match_number']))
+            team_sheet.cell(column=matches_column, row=matches_row).font = Font(bold=True, size=14)
+
+            fill_with_borders(team_sheet, xlref(matches_row + 1, matches_column) + ":" + xlref(matches_row + 7, matches_column + 1))
+            fill_with_borders(team_sheet, xlref(matches_row + 1, matches_column + 3) + ":" + xlref(matches_row + 9, matches_column + 4))
+            fill_with_borders(team_sheet, xlref(matches_row + 9, matches_column) + ":" + xlref(matches_row + 9, matches_column + 1))
+
+            team_sheet.cell(column=matches_column, row=matches_row + 1, value="Total Cycles")
+            team_sheet.cell(column=matches_column, row=matches_row + 2, value="TOC")
+            team_sheet.cell(column=matches_column, row=matches_row + 3, value="Climb Level")
+            team_sheet.cell(column=matches_column, row=matches_row + 4, value="Left Hab")
+            team_sheet.cell(column=matches_column, row=matches_row + 5, value="Time Incap")
+            team_sheet.cell(column=matches_column, row=matches_row + 6, value="Time Defending")
+            team_sheet.cell(column=matches_column, row=matches_row + 7, value="Time Climbing")
+            team_sheet.cell(column=matches_column, row=matches_row + 9, value="Scout")
+
+            team_sheet.cell(column=matches_column + 1, row=matches_row + 1, value=timd['calculated']['totalCycles'])
+            team_sheet.cell(column=matches_column + 1, row=matches_row + 2, value=timd['calculated']['trueOffensiveContribution'])
+            team_sheet.cell(column=matches_column + 1, row=matches_row + 3, value=timd['climb']['actualClimb'])
+            team_sheet.cell(column=matches_column + 1, row=matches_row + 4, value=timd['header']['leftHab'])
+            team_sheet.cell(column=matches_column + 1, row=matches_row + 5, value=timd['calculated']['timeIncap'])
+            team_sheet.cell(column=matches_column + 1, row=matches_row + 6, value=timd['calculated']['timeDefending'])
+            team_sheet.cell(column=matches_column + 1, row=matches_row + 7, value=timd['calculated']['timeClimbing'])
+            team_sheet.cell(column=matches_column + 1, row=matches_row + 9, value=timd['header']['scoutKey'])
+
+            team_sheet.cell(column=matches_column + 3, row=matches_row, value="Cycles Done")
+            team_sheet.cell(column=matches_column + 3, row=matches_row).font = Font(bold=True, size=14)
+            team_sheet.cell(column=matches_column + 3, row=matches_row + 1, value="Hatches")
+            team_sheet.cell(column=matches_column + 3, row=matches_row + 2, value="Cargo")
+            team_sheet.cell(column=matches_column + 3, row=matches_row + 3, value="Rocket")
+            team_sheet.cell(column=matches_column + 3, row=matches_row + 4, value="Cargo Ship")
+            team_sheet.cell(column=matches_column + 3, row=matches_row + 5, value="Level 1")
+            team_sheet.cell(column=matches_column + 3, row=matches_row + 6, value="Level 2")
+            team_sheet.cell(column=matches_column + 3, row=matches_row + 7, value="Level 3")
+            team_sheet.cell(column=matches_column + 3, row=matches_row + 8, value="Hatch SS")
+            team_sheet.cell(column=matches_column + 3, row=matches_row + 9, value="Cargo SS")
+
+            team_sheet.cell(column=matches_column + 4, row=matches_row + 1, value=timd['calculated']['hatchesScored'])
+            team_sheet.cell(column=matches_column + 4, row=matches_row + 2, value=timd['calculated']['cargoScored'])
+            team_sheet.cell(column=matches_column + 4, row=matches_row + 3, value=timd['calculated']['cargoScoredRocket'] + timd['calculated']['hatchScoredRocket'])
+            team_sheet.cell(column=matches_column + 4, row=matches_row + 4, value=timd['calculated']['cargoScoredCargoShip'] + timd['calculated']['hatchScoredCargoShip'])
+            team_sheet.cell(column=matches_column + 4, row=matches_row + 5, value=timd['calculated']['hatchScoredLevel1'] + timd['calculated']['cargoScoredLevel1'])
+            team_sheet.cell(column=matches_column + 4, row=matches_row + 6, value=timd['calculated']['hatchScoredLevel2'] + timd['calculated']['cargoScoredLevel2'])
+            team_sheet.cell(column=matches_column + 4, row=matches_row + 7, value=timd['calculated']['hatchScoredLevel3'] + timd['calculated']['cargoScoredLevel3'])
+            team_sheet.cell(column=matches_column + 4, row=matches_row + 8, value=timd['calculated']['hatchScoredSS'])
+            team_sheet.cell(column=matches_column + 4, row=matches_row + 9, value=timd['calculated']['cargoScoredSS'])
+
+            matches_displayed += 1
+            matches_column += 6
+            if matches_displayed % 3 == 0:
+                matches_row += 12
+                matches_column = 1
 
         current_row += 1
         wb.save('paly_from_8th.xlsx')

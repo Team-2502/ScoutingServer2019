@@ -433,7 +433,7 @@ def calculate_team(team_number, last_timd, json=False):
             team = {'teamNumber': last_timd['team_number']}
             timds = [last_timd]
 
-        team['timds'] = timds
+        team['timds'] = sorted(timds, key=lambda timd: timd['header']['matchNumber'])  # DANGER Untested ----> team['timds'] = timds
 
     num_matches = len(timds)
     num_no_shows = len([timd for timd in timds if timd['header']['isNoShow']])
