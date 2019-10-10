@@ -561,15 +561,12 @@ def calculate_team(team_number, last_timd, json=False):
         print(f'{team_number} cached')
 
         database.child("teams").child(team_number).set(team)
-        print(f'{team_number} uploaded to Firebase')
+        print(f'{team_number} uploaded to Firebase\n')
 
     return team
+
 
 def get_timds(team_number):
     homeDir = os.path.expanduser('~')
     TIMDs = [timd for timd in os.listdir(os.path.join(homeDir, 'EMCC-2019Server/cache/TIMDs')) if timd != '.DS_Store']
     return [json.loads(open(os.path.join(homeDir, 'EMCC-2019Server/cache/TIMDs/', TIMD)).read()) for TIMD in TIMDs if int(TIMD.split('-')[1]) == int(team_number)]
-
-
-if __name__ == '__main__':
-    calculate_team(51)

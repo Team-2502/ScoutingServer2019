@@ -1,5 +1,6 @@
 import sensitiveInfo
 from calculations import calculateTIMD, calculateTeam, pullPitscoutingData
+import export
 
 import os
 import pyrebase
@@ -42,14 +43,29 @@ def run_server_testing():
 
 
 def run_server_comp():
+    current_unfinished_match = 1
+    timds_in_last_match = 0
+
     while True:
         rawTIMDs = database.child('rawTIMDs').get()
         if rawTIMDs.val() is None:
             time.sleep(5)
-            print("wow")
         else:
             for temp_timd in rawTIMDs.each():
                 timd = calculateTIMD.calculate_timd(temp_timd.val(), temp_timd.key())
+
+                match_num = timd['match_number']
+                if match_num == current_unfinished_match:
+                    timds_in_last_match += 1
+                    if timds_in_last_match == 6:
+                        print("\nAll TIMDs for QM " + str(current_unfinished_match) + " synced\n")
+                        timds_in_last_match = 0
+                        export.export_spreadsheet()
+                        print("Data exported")
+                        export.upload_to_drive(" Post QM" + str(current_unfinished_match) + "Full Export")
+                        print("Data uploaded to Drive\n")
+                        current_unfinished_match += 1
+
                 database.child("rawTIMDs").child(temp_timd.key()).remove()
                 team_num = temp_timd.key().split("-")[1]
                 calculateTeam.calculate_team(team_num, timd)

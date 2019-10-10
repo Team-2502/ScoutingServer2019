@@ -6,6 +6,7 @@ import pyrebase
 
 from utils import *
 
+
 def calculate_statistics(decompressed_timd):
     calculated_data = {}
 
@@ -104,6 +105,6 @@ def calculate_timd(compressed_timd, timd_name, test=False):
 
         database.child("TIMDs").child(timd_name).set(decompressed_timd)
         database.child("decompedTIMDs").child(timd_name).set(compressed_timd)
-        print(f'{timd_name} uploaded to Firebase')
+        print(f'{timd_name} uploaded to Firebase\n')
 
     return decompressed_timd
