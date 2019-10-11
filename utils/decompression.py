@@ -66,6 +66,7 @@ TEMP_TIMD_COMP_VALUES = {
 }
 SCOUT_NAME_VALUES = {
     "a": "Adhi",
+    "v": "Aedin",
     "b": "Big Chief",
     "c": "Christian",
     "d": "Christopher",
@@ -73,7 +74,9 @@ SCOUT_NAME_VALUES = {
     "f": "Drew",
     "g": "Evan",
     "s": "Isaac A",
+    "y": "Isaac W",
     "p": "Ishan",
+    "x": "Josie",
     "r": "Justin",
     "h": "Kyle",
     "q": "Michael",
@@ -82,6 +85,7 @@ SCOUT_NAME_VALUES = {
     "j": "Neel",
     "k": "Nigel",
     "l": "Ravisha",
+    "w": "Rahul",
     "m": "Riley",
     "n": "Ritik",
     "o": "Ryan",

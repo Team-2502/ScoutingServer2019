@@ -8,7 +8,6 @@ import slack
 
 homeDir = os.path.expanduser('~')
 
-# Firebase setup
 pyrebase_config = {
         "apiKey": sensitiveInfo.firebase_api_key(),
         "authDomain": "emcc2019-fb7dd.firebaseapp.com",
@@ -104,6 +103,7 @@ def run_server_comp():
                         )
                     elif get_num_timds_for_match("QM" + str(match_num)) > 6:
                         print("WARNING: More than 6 TIMDs for Match " + str(match_num) + " processed!")
+                        # TODO Delete the extra one
                     else:
                         print("WARNING: Still missing " + str(6 - get_num_timds_for_match("QM" + str(match_num)))) +\
                               " TIMDs for Match " + str(match_num)
