@@ -1,10 +1,10 @@
 import sensitiveInfo
 from calculations import calculateTIMD, calculateTeam, pullPitscoutingData
 import export
-
 import os
 import pyrebase
 import time
+import slack
 
 homeDir = os.path.expanduser('~')
 
@@ -27,6 +27,12 @@ def reset_timds():
         database.child("decompedTIMDs").child(timd.key()).remove()
 
 
+def get_num_timds_for_match(match_number):
+    homeDir = os.path.expanduser('~')
+    timds = os.listdir(os.path.join(homeDir, 'EMCC-2019Server/cache/TIMDs'))
+    return len([timd for timd in timds if timd.split('-')[0] == match_number])
+
+
 def run_server_testing():
     pullPitscoutingData.pullPitScoutingData()
 
@@ -43,7 +49,10 @@ def run_server_testing():
 
 
 def run_server_comp():
-    current_unfinished_match = 1
+    slack_token = sensitiveInfo.slack_api_key()
+    slack_client = slack.WebClient(token=slack_token)
+
+    current_unfinished_match = int(input("Next Match to be played?\n"))
     timds_in_last_match = 0
 
     while True:
@@ -64,7 +73,40 @@ def run_server_comp():
                         print("Data exported")
                         export.upload_to_drive(" Post QM" + str(current_unfinished_match) + "Full Export")
                         print("Data uploaded to Drive\n")
+                        slack_client.chat_postMessage(
+                            channel="UC3TC3PN3",
+                            text="All TIMDs for Match " + str(current_unfinished_match) + "processed and data exported"
+                        )
                         current_unfinished_match += 1
+
+                elif match_num > current_unfinished_match:
+                    print("WARNING: MISSING TIMD FOR " + str(current_unfinished_match))
+                    slack_client.chat_postMessage(
+                        channel="UC3TC3PN3",
+                        text="WARNING: TIMD for Match " + str(match_num) + " uploaded before Match " +
+                             str(current_unfinished_match) + " had 6 TIMDs!"
+                    )
+                    current_unfinished_match += 1
+                    timds_in_last_match = 1
+
+                elif match_num < current_unfinished_match:
+                    print("WARNING: CALCULATING TIMD FROM PAST MATCH " + str(current_unfinished_match - 1))
+                    if get_num_timds_for_match("QM" + str(match_num)) == 6:
+                        print("\nAll TIMDs for QM " + str(match_num) + " synced\n")
+                        timds_in_last_match = 0
+                        export.export_spreadsheet()
+                        print("Data exported")
+                        export.upload_to_drive(" Post QM" + str(match_num) + "Full Export")
+                        print("Data uploaded to Drive\n")
+                        slack_client.chat_postMessage(
+                            channel="UC3TC3PN3",
+                            text="All TIMDs for Match " + str(match_num) + "processed and data exported"
+                        )
+                    elif get_num_timds_for_match("QM" + str(match_num)) > 6:
+                        print("WARNING: More than 6 TIMDs for Match " + str(match_num) + " processed!")
+                    else:
+                        print("WARNING: Still missing " + str(6 - get_num_timds_for_match("QM" + str(match_num)))) +\
+                              " TIMDs for Match " + str(match_num)
 
                 database.child("rawTIMDs").child(temp_timd.key()).remove()
                 team_num = temp_timd.key().split("-")[1]
