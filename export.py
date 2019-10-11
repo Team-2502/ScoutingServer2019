@@ -105,13 +105,15 @@ def export_spreadsheet():
     wb = openpyxl.load_workbook('paly_from_8th.xlsx')
 
     for sheet in wb.worksheets:
-        if sheet.title != 'Team Template' or 'Match Template':
+        if sheet.title != 'Team Template' and sheet.title is not 'Match Template' and sheet.title is not 'Summary Template' and sheet.title != "huh":
             wb.remove(sheet)
 
     raw_sheet = wb.create_sheet('Raw Export')
     raw_sheet.cell(row=1, column=1).value = 'Number'
 
-    summary_sheet = wb.create_sheet('Summary Sheet')
+    template = wb['huh']
+    summary_sheet = wb.copy_worksheet(template)
+    summary_sheet.title = 'Summary'
     summary_sheet.cell(row=1, column=1).value = 'Number'
 
     current_column = 2
@@ -130,6 +132,35 @@ def export_spreadsheet():
                 for key in header[0]:
                     raw_sheet.cell(row=current_row, column=current_column).value = team[header[1]][key]
                     current_column += 1
+
+            summary_sheet.cell(row=current_row, column=1).value = team['teamNumber']
+            summary_sheet.cell(row=current_row, column=2).value = team['totals']['avgCargoScored']
+            summary_sheet.cell(row=current_row, column=3).value = team['totals']['avgHatchesScored']
+            summary_sheet.cell(row=current_row, column=4).value = team['totals']['avgPiecesScoredRocket']
+            summary_sheet.cell(row=current_row, column=5).value = team['totals']['avgPiecesScoredCargoShip']
+            summary_sheet.cell(row=current_row, column=6).value = team['p75s']['p75CargoScored']
+            summary_sheet.cell(row=current_row, column=7).value = team['p75s']['p75HatchesScored']
+            summary_sheet.cell(row=current_row, column=8).value = team['maxes']['maxCargoScored']
+            summary_sheet.cell(row=current_row, column=9).value = team['maxes']['maxHatchesScored']
+            summary_sheet.cell(row=current_row, column=10).value = team['totals']['avgCargoScoredSandstorm']
+            summary_sheet.cell(row=current_row, column=11).value = team['totals']['avgHatchesScoredSandstorm']
+            summary_sheet.cell(row=current_row, column=12).value = team['totals']['timeDefending']
+            summary_sheet.cell(row=current_row, column=13).value = team['totals']['timeIncap']
+            summary_sheet.cell(row=current_row, column=14).value = team['team_abilities']['placeLevel2']
+            summary_sheet.cell(row=current_row, column=15).value = team['team_abilities']['placeLevel3']
+            summary_sheet.cell(row=current_row, column=16).value = team['team_abilities']['startLevel2']
+            summary_sheet.cell(row=current_row, column=17).value = team['team_abilities']['climbHab2']
+            summary_sheet.cell(row=current_row, column=18).value = team['team_abilities']['climbHab3']
+            summary_sheet.cell(row=current_row, column=19).value = team['cycle_times']['cargoOverall']
+            summary_sheet.cell(row=current_row, column=20).value = team['cycle_times']['hatchOverall']
+            summary_sheet.cell(row=current_row, column=21).value = team['team_abilities']['placeCargo']
+            summary_sheet.cell(row=current_row, column=22).value = team['team_abilities']['placeHatch']
+
+
+
+
+
+
 
             template = wb['Team Template']
             team_sheet = wb.copy_worksheet(template)
