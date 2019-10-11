@@ -105,27 +105,30 @@ def export_spreadsheet():
     wb = openpyxl.load_workbook('paly_from_8th.xlsx')
 
     for sheet in wb.worksheets:
-        if sheet.title != 'Team Template':
+        if sheet.title != 'Team Template' or 'Match Template':
             wb.remove(sheet)
 
-    ws = wb.create_sheet('Raw Export')
-    ws.cell(row=1, column=1).value = 'Number'
+    raw_sheet = wb.create_sheet('Raw Export')
+    raw_sheet.cell(row=1, column=1).value = 'Number'
+
+    summary_sheet = wb.create_sheet('Summary Sheet')
+    summary_sheet.cell(row=1, column=1).value = 'Number'
 
     current_column = 2
 
     for header in headers:
         for key in header[0]:
-            ws.cell(row=1, column=current_column).value = key
+            raw_sheet.cell(row=1, column=current_column).value = key
             current_column += 1
 
     current_row = 2
     for team in teams:
             current_column = 2
-            ws.cell(row=current_row, column=1).value = team['teamNumber']
+            raw_sheet.cell(row=current_row, column=1).value = team['teamNumber']
 
             for header in headers:
                 for key in header[0]:
-                    ws.cell(row=current_row, column=current_column).value = team[header[1]][key]
+                    raw_sheet.cell(row=current_row, column=current_column).value = team[header[1]][key]
                     current_column += 1
 
             template = wb['Team Template']
