@@ -76,8 +76,11 @@ def calculate_climb(decompressed_timd):
 
 def calculate_timd(compressed_timd, timd_name, test=False):
     decompressed_timd = decompression.decompress_timd(compressed_timd)
-    decompressed_timd['calculated'] = calculate_statistics(decompressed_timd)
-    decompressed_timd['climb'] = calculate_climb(decompressed_timd)
+    if decompressed_timd['header']['isNoShow']:
+        pass
+    else:
+        decompressed_timd['calculated'] = calculate_statistics(decompressed_timd)
+        decompressed_timd['climb'] = calculate_climb(decompressed_timd)
 
     if not test:
         print(f'{timd_name} decompressed')

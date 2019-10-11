@@ -79,7 +79,7 @@ def run_server_comp():
                         current_unfinished_match += 1
 
                 elif match_num > current_unfinished_match:
-                    print("WARNING: MISSING TIMD FOR " + str(current_unfinished_match))
+                    print("WARNING: MISSING TIMD FOR MATCH " + str(current_unfinished_match))
                     slack_client.chat_postMessage(
                         channel="UC3TC3PN3",
                         text="WARNING: TIMD for Match " + str(match_num) + " uploaded before Match " +
@@ -105,8 +105,7 @@ def run_server_comp():
                         print("WARNING: More than 6 TIMDs for Match " + str(match_num) + " processed!")
                         # TODO Delete the extra one
                     else:
-                        print("WARNING: Still missing " + str(6 - get_num_timds_for_match("QM" + str(match_num)))) +\
-                              " TIMDs for Match " + str(match_num)
+                        print("WARNING: Still missing " + str(6 - get_num_timds_for_match("QM" + str(match_num))) + " TIMDs for Match " + str(match_num))
 
                 database.child("rawTIMDs").child(temp_timd.key()).remove()
                 team_num = temp_timd.key().split("-")[1]

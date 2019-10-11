@@ -417,23 +417,23 @@ SD_CYCLE_TIME_DATA_FIELDS = {
 def get_team(team_number):
     homeDir = os.path.expanduser('~')
     teams = os.listdir(os.path.join(homeDir, 'EMCC-2019Server/cache/teams'))
-    return [json.loads(open(os.path.join(homeDir, 'EMCC-2019Server/cache/teams/', team)).read()) for team in teams if int(team.split('.')[0]) == int(team_number)][0]
+    return [json.loads(open(os.path.join(homeDir, 'EMCC-2019Server/cache/teams/', team)).read()) for team in teams if team != '.DS_Store' and int(team.split('.')[0]) == int(team_number)][0]
 
 
-def calculate_team(team_number, last_timd, json=False):
-    if json is not False:
-        team = json
+def calculate_team(team_number, last_timd, is_json=False):
+    if is_json is not False:
+        team = is_json
         timds = team['timds']
 
     else:
         try:
             team = get_team(team_number)
             timds = get_timds(team_number)
-        except IndexError:
+        except ValueError:
             team = {'teamNumber': last_timd['team_number']}
             timds = [last_timd]
 
-        team['timds'] = sorted(timds, key=lambda timd: timd['header']['matchNumber'])  # DANGER Untested ----> team['timds'] = timds
+        team['timds'] = sorted(timds, key=lambda timd: timd['header']['matchNumber'])
 
     num_matches = len(timds)
     num_no_shows = len([timd for timd in timds if timd['header']['isNoShow']])
@@ -499,23 +499,23 @@ def calculate_team(team_number, last_timd, json=False):
     percentages['cargoPercentageOfCycles'] = sum([timd['calculated']['cargoScored'] for timd in timds]) / sum([timd['calculated']['totalCycles'] for timd in timds]) if sum([timd['calculated']['totalCycles'] for timd in timds]) != 0 else 0
     percentages['cargoPercentageOfCycles'] = round(100 * (1 - percentages['cargoPercentageOfCycles']))
 
-    percentages['percentMatchesStartHab1'] = len([timd for timd in timds if timd['header']['startLevel'] == 'hab1']) / len(timds)
-    percentages['percentMatchesStartHab1'] = round(100 * (1 - percentages['percentMatchesStartHab1']))
-    percentages['percentMatchesStartHab2'] = len([timd for timd in timds if timd['header']['startLevel'] == 'hab2']) / len(timds)
-    percentages['percentMatchesStartHab2'] = round(100 * (1 - percentages['percentMatchesStartHab2']))
-    percentages['leftHab'] = round(100 * (len([timd for timd in timds if timd['header']['leftHab']]) / len(timds)))
+    percentages['percentMatchesStartHab1'] = len([timd for timd in timds if timd['header']['startLevel'] == 'hab1']) / len(timds) if len(timds) is not 0 else 0
+    percentages['percentMatchesStartHab1'] = round(100 * (percentages['percentMatchesStartHab1']))
+    percentages['percentMatchesStartHab2'] = len([timd for timd in timds if timd['header']['startLevel'] == 'hab2']) / len(timds) if len(timds) is not 0 else 0
+    percentages['percentMatchesStartHab2'] = round(100 * (percentages['percentMatchesStartHab2']))
+    percentages['leftHab'] = round(100 * (len([timd for timd in timds if timd['header']['leftHab']]) / len(timds))) if len(timds) is not 0 else 0
 
     percentages['hab3ClimbSuccessRate'] = round(100 * (len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level3')) / len(cycles.filter_timeline_actions(timds, actionType='climb', attemptedClimb='level3')))) if len(cycles.filter_timeline_actions(timds, actionType='climb', attemptedClimb='level3')) != 0 else None
     percentages['hab2ClimbSuccessRate'] = round(100 * (len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level2')) / len(cycles.filter_timeline_actions(timds, actionType='climb', attemptedClimb='level2')))) if len(cycles.filter_timeline_actions(timds, actionType='climb', attemptedClimb='level2')) != 0 else None
-    percentages['percentMatchesClimbHab3'] = round(100 * (len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level3')) / len(timds)))
-    percentages['percentMatchesClimbHab2'] = round(100 * (len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level2')) / len(timds)))
-    percentages['percentMatchesClimbHab1'] = round(100 * (len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level1')) / len(timds)))
+    percentages['percentMatchesClimbHab3'] = round(100 * (len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level3')) / len(timds))) if len(timds) is not 0 else 0
+    percentages['percentMatchesClimbHab2'] = round(100 * (len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level2')) / len(timds))) if len(timds) is not 0 else 0
+    percentages['percentMatchesClimbHab1'] = round(100 * (len(cycles.filter_timeline_actions(timds, actionType='climb', actualClimb='level1')) / len(timds))) if len(timds) is not 0 else 0
 
-    percentages['percentOfTotalTeleopDefending'] = round(100 * (team['totals']['timeDefending'] / (len(timds) * 135)))
+    percentages['percentOfTotalTeleopDefending'] = round(100 * (team['totals']['timeDefending'] / (len(timds) * 135))) if len(timds) is not 0 else 0
 
-    percentages['percentOfTimeIncap'] = round(100 * (team['totals']['timeIncap'] / (len(timds) * 150)))
+    percentages['percentOfTimeIncap'] = round(100 * (team['totals']['timeIncap'] / (len(timds) * 150))) if len(timds) is not 0 else 0
 
-    percentages['percentOfMatchesNoShow'] = round(100 * (num_no_shows / num_matches))
+    percentages['percentOfMatchesNoShow'] = round(100 * (num_no_shows / num_matches + num_no_shows))
 
     team['percentages'] = percentages
 
@@ -545,12 +545,12 @@ def calculate_team(team_number, last_timd, json=False):
         "serviceAccount": os.path.join(homeDir, "EMCC-2019Server/config/emcc2019-fb7dd-8de616e8bc8c.json")
     }
 
-    if json is False:
+    if is_json is False:
         firebase = pyrebase.initialize_app(pyrebase_config)
         database = firebase.database()
 
-        team['pitscouting'] = dict(database.child("teams").child(team_number).child('pitscouting').get().val())
-        #team['sykes'] = dict(database.child("teams").child(team_number).child('sykes').get().val())
+        # team['pitscouting'] = dict(database.child("teams").child(team_number).child('pitscouting').get().val())
+        # team['sykes'] = dict(database.child("teams").child(team_number).child('sykes').get().val())
 
         # Save data in local cache
         if not os.path.exists(os.path.join(homeDir, 'EMCC-2019Server/cache/teams')):
