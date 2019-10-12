@@ -11,12 +11,23 @@ def upload_to_drive(filename):
     gauth = GoogleAuth()
     # Try to load saved client credentials
     gauth.LoadCredentialsFile("oauthcreds.txt")
+
     if gauth.credentials is None:
         # Authenticate if they're not there
+
+        # TODO Move to master
+        # https://stackoverflow.com/a/55876179
+        # This is what solved the issues:
+        gauth.GetFlow()
+        gauth.flow.params.update({'access_type': 'offline'})
+        gauth.flow.params.update({'approval_prompt': 'force'})
+
         gauth.LocalWebserverAuth()
+
     elif gauth.access_token_expired:
         # Refresh them if expired
         gauth.Refresh()
+
     else:
         # Initialize the saved creds
         gauth.Authorize()
@@ -28,7 +39,7 @@ def upload_to_drive(filename):
     # https://stackoverflow.com/a/22934892
     # https://stackoverflow.com/a/40236586
     drive_file = drive.CreateFile({'title': filename,
-                                   "parents": [{"kind": "drive#fileLink", "id": "1bJxwrKzXzfKYRuftD0BIoOEYDobUTPUw"}]})
+                                   "parents": [{"kind": "drive#fileLink", "id": "1mqZ2DkpPghC6N04Qt8WcMKBa_hN3PKv9"}]})
 
     # Read file and set it as a content of this instance.
     drive_file.SetContentFile("paly_from_8th.xlsx")
@@ -88,7 +99,7 @@ def fill_with_borders(ws, cell_range):
 
 def export_spreadsheet():
     homeDir = os.path.expanduser('~')
-    teams = [json.loads(open(os.path.join(homeDir, 'EMCC-2019Server/cache/teams/', team)).read()) for team in os.listdir(os.path.join(homeDir, 'EMCC-2019Server/cache/teams')) if team != '.DS_Store']
+    teams = [json.loads(open(os.path.join(homeDir, 'MRI-2019Server/cache/teams/', team)).read()) for team in os.listdir(os.path.join(homeDir, 'MRI-2019Server/cache/teams')) if team != '.DS_Store']
 
     totals = ([key for key in teams[0]['totals'].keys()], 'totals')
     l3ms = ([key for key in teams[0]['l3ms'].keys()], 'l3ms')
@@ -305,4 +316,5 @@ def export_spreadsheet():
 
 
 if __name__ == "__main__":
-    export_spreadsheet()
+    # export_spreadsheet()
+    upload_to_drive('test_refresh')

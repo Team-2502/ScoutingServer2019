@@ -8,14 +8,14 @@ from utils import *
 
 def get_timds(team_number):
     homeDir = os.path.expanduser('~')
-    TIMDs = [timd for timd in os.listdir(os.path.join(homeDir, 'EMCC-2019Server/cache/TIMDs')) if timd != '.DS_Store']
-    return [json.loads(open(os.path.join(homeDir, 'EMCC-2019Server/cache/TIMDs/', TIMD)).read()) for TIMD in TIMDs if int(TIMD.split('-')[1]) == int(team_number)]
+    TIMDs = [timd for timd in os.listdir(os.path.join(homeDir, 'MRI-2019Server/cache/TIMDs')) if timd != '.DS_Store']
+    return [json.loads(open(os.path.join(homeDir, 'MRI-2019Server/cache/TIMDs/', TIMD)).read()) for TIMD in TIMDs if int(TIMD.split('-')[1]) == int(team_number)]
 
 
 def get_team(team_number):
     homeDir = os.path.expanduser('~')
-    teams = os.listdir(os.path.join(homeDir, 'EMCC-2019Server/cache/teams'))
-    return [json.loads(open(os.path.join(homeDir, 'EMCC-2019Server/cache/teams/', team)).read()) for team in teams if int(team.split('.')[0]) == int(team_number)][0]
+    teams = os.listdir(os.path.join(homeDir, 'MRI-2019Server/cache/teams'))
+    return [json.loads(open(os.path.join(homeDir, 'MRI-2019Server/cache/teams/', team)).read()) for team in teams if int(team.split('.')[0]) == int(team_number)][0]
 
 
 def calculate_defense(team_number):

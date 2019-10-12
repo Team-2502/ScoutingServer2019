@@ -10,16 +10,15 @@ def get_sykes_data():
 
     pyrebase_config = {
         "apiKey": sensitiveInfo.firebase_api_key(),
-        "authDomain": "emcc2019-fb7dd.firebaseapp.com",
-        "databaseURL": "https://emcc2019-fb7dd.firebaseio.com",
-        "storageBucket": "emcc2019-fb7dd.appspot.com",
-        "serviceAccount": os.path.join(homeDir, "EMCC-2019Server/config/emcc2019-fb7dd-8de616e8bc8c.json")
+        "authDomain": "mri2019.firebaseapp.com",
+        "databaseURL": "https://mri2019.firebaseio.com",
+        "storageBucket": "mri2019.appspot.com",
     }
 
     firebase = pyrebase.initialize_app(pyrebase_config)
     database = firebase.database()
 
-    sykes_file = os.path.join(homeDir, 'EMCC-2019Server/config/sykes.xlsx')
+    sykes_file = os.path.join(homeDir, 'MRI-2019Server/config/sykes.xlsx')
     wb = openpyxl.load_workbook(sykes_file)
     pred_contrib = wb['Sheet1']
 

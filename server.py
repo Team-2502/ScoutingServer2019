@@ -10,10 +10,9 @@ homeDir = os.path.expanduser('~')
 
 pyrebase_config = {
         "apiKey": sensitiveInfo.firebase_api_key(),
-        "authDomain": "emcc2019-fb7dd.firebaseapp.com",
-        "databaseURL": "https://emcc2019-fb7dd.firebaseio.com",
-        "storageBucket": "emcc2019-fb7dd.appspot.com",
-        "serviceAccount": os.path.join(homeDir, "EMCC-2019Server/config/emcc2019-fb7dd-8de616e8bc8c.json")
+        "authDomain": "mri2019.firebaseapp.com",
+        "databaseURL": "https://mri2019.firebaseio.com",
+        "storageBucket": "mri2019.appspot.com",
     }
 
 firebase = pyrebase.initialize_app(pyrebase_config)
@@ -28,7 +27,7 @@ def reset_timds():
 
 def get_num_timds_for_match(match_number):
     homeDir = os.path.expanduser('~')
-    timds = os.listdir(os.path.join(homeDir, 'EMCC-2019Server/cache/TIMDs'))
+    timds = os.listdir(os.path.join(homeDir, 'MRI-2019Server/cache/TIMDs'))
     return len([timd for timd in timds if timd.split('-')[0] == match_number])
 
 

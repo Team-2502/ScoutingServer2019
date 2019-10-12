@@ -11,10 +11,9 @@ homeDir = os.path.expanduser('~')
 # Firebase setup
 pyrebase_config = {
         "apiKey": sensitiveInfo.firebase_api_key(),
-        "authDomain": "emcc2019-fb7dd.firebaseapp.com",
-        "databaseURL": "https://emcc2019-fb7dd.firebaseio.com",
-        "storageBucket": "emcc2019-fb7dd.appspot.com",
-        "serviceAccount": os.path.join(homeDir, "EMCC-2019Server/config/emcc2019-fb7dd-8de616e8bc8c.json")
+        "authDomain": "mri2019.firebaseapp.com",
+        "databaseURL": "https://mri2019.firebaseio.com",
+        "storageBucket": "mri2019.appspot.com",
     }
 firebase = pyrebase.initialize_app(pyrebase_config)
 database = firebase.database()
@@ -56,10 +55,10 @@ for match in matches:
     full_assignments["QM "+str(match_num)] = assignments
 
 # Save file as json and txt
-with open(os.path.join(homeDir, 'EMCC-2019Server/assignments/BackupAssignments.json'), 'w') as f:
+with open(os.path.join(homeDir, 'MRI-2019Server/assignments/BackupAssignments.json'), 'w') as f:
     json.dump(full_assignments, f)
 
-with open(os.path.join(homeDir, 'EMCC-2019Server/assignments/BackupAssignments.txt'), 'w') as f:
+with open(os.path.join(homeDir, 'MRI-2019Server/assignments/BackupAssignments.txt'), 'w') as f:
     f.write(json.dumps(full_assignments))
 
 # Upload assignments to Firebase
