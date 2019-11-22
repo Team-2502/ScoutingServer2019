@@ -67,6 +67,10 @@ def run_server_comp():
                     if timds_in_last_match == 6:
                         print("\nAll TIMDs for QM " + str(current_unfinished_match) + " synced\n")
                         timds_in_last_match = 0
+
+                        team_num = temp_timd.key().split("-")[1]
+                        calculateTeam.calculate_team(team_num, timd)
+
                         export.export_spreadsheet()
                         print("Data exported")
                         export.upload_to_drive(" Post QM" + str(current_unfinished_match) + "Full Export")
