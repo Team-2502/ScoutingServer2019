@@ -20,7 +20,7 @@ database = firebase.database()
 
 # Setup for tbapy
 tba = tbapy.TBA(sensitiveInfo.tba_api_key())
-event = "2019emcc"
+event = "2019mnri"
 
 # Get a list of all qualifying matches at an event
 try:

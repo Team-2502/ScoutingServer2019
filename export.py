@@ -316,5 +316,5 @@ def export_spreadsheet():
 
 
 if __name__ == "__main__":
-    # export_spreadsheet()
-    upload_to_drive('test_refresh')
+    export_spreadsheet()
+    upload_to_drive('Final MRI')
