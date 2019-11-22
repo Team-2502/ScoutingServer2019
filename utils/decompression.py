@@ -89,7 +89,9 @@ SCOUT_NAME_VALUES = {
     "m": "Riley",
     "n": "Ritik",
     "o": "Ryan",
-    "u": "Other"
+    "u": "Other",
+    "z": "Abhi",
+    "aa": "Varun"
 }
 
 

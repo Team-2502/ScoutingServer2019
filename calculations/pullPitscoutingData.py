@@ -10,15 +10,15 @@ def pullPitScoutingData():
 
     pyrebase_config = {
         "apiKey": sensitiveInfo.firebase_api_key(),
-        "authDomain": "mri2019.firebaseapp.com",
-        "databaseURL": "https://mri2019.firebaseio.com",
-        "storageBucket": "mri2019.appspot.com",
+        "authDomain": "mmr-2019.firebaseapp.com",
+        "databaseURL": "https://mmr-2019.firebaseio.com",
+        "storageBucket": "mmr-2019.appspot.com",
     }
 
     firebase = pyrebase.initialize_app(pyrebase_config)
     database = firebase.database()
 
-    pit_file = os.path.join(homeDir, 'MRI-2019Server/config/pitscouting.xlsx')
+    pit_file = os.path.join(homeDir, 'MMR-2019Server/config/pitscouting.xlsx')
     wb = openpyxl.load_workbook(pit_file)
     data = wb['Form Responses 1']
 

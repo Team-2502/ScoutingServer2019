@@ -39,7 +39,7 @@ def upload_to_drive(filename):
     # https://stackoverflow.com/a/22934892
     # https://stackoverflow.com/a/40236586
     drive_file = drive.CreateFile({'title': filename,
-                                   "parents": [{"kind": "drive#fileLink", "id": "1mqZ2DkpPghC6N04Qt8WcMKBa_hN3PKv9"}]})
+                                   "parents": [{"kind": "drive#fileLink", "id": "1wF0RtOv1uSC4bW7IC4raSHMqGt0YBDNm"}]})
 
     # Read file and set it as a content of this instance.
     drive_file.SetContentFile("paly_from_8th.xlsx")
@@ -99,7 +99,7 @@ def fill_with_borders(ws, cell_range):
 
 def export_spreadsheet():
     homeDir = os.path.expanduser('~')
-    teams = [json.loads(open(os.path.join(homeDir, 'MRI-2019Server/cache/teams/', team)).read()) for team in os.listdir(os.path.join(homeDir, 'MRI-2019Server/cache/teams')) if team != '.DS_Store']
+    teams = [json.loads(open(os.path.join(homeDir, 'MMR-2019Server/cache/teams/', team)).read()) for team in os.listdir(os.path.join(homeDir, 'MMR-2019Server/cache/teams')) if team != '.DS_Store']
 
     totals = ([key for key in teams[0]['totals'].keys()], 'totals')
     l3ms = ([key for key in teams[0]['l3ms'].keys()], 'l3ms')
@@ -317,4 +317,4 @@ def export_spreadsheet():
 
 if __name__ == "__main__":
     export_spreadsheet()
-    upload_to_drive('Final MRI')
+    upload_to_drive('Final MMR')

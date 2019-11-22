@@ -416,14 +416,14 @@ SD_CYCLE_TIME_DATA_FIELDS = {
 
 def get_team(team_number):
     homeDir = os.path.expanduser('~')
-    teams = os.listdir(os.path.join(homeDir, 'MRI-2019Server/cache/teams'))
-    return [json.loads(open(os.path.join(homeDir, 'MRI-2019Server/cache/teams/', team)).read()) for team in teams if team != '.DS_Store' and int(team.split('.')[0]) == int(team_number)][0]
+    teams = os.listdir(os.path.join(homeDir, 'MMR-2019Server/cache/teams'))
+    return [json.loads(open(os.path.join(homeDir, 'MMR-2019Server/cache/teams/', team)).read()) for team in teams if team != '.DS_Store' and int(team.split('.')[0]) == int(team_number)][0]
 
 
 def get_timds(team_number):
     homeDir = os.path.expanduser('~')
-    TIMDs = [timd for timd in os.listdir(os.path.join(homeDir, 'MRI-2019Server/cache/TIMDs')) if timd != '.DS_Store']
-    return [json.loads(open(os.path.join(homeDir, 'MRI-2019Server/cache/TIMDs/', TIMD)).read()) for TIMD in TIMDs if int(TIMD.split('-')[1]) == int(team_number)]
+    TIMDs = [timd for timd in os.listdir(os.path.join(homeDir, 'MMR-2019Server/cache/TIMDs')) if timd != '.DS_Store']
+    return [json.loads(open(os.path.join(homeDir, 'MMR-2019Server/cache/TIMDs/', TIMD)).read()) for TIMD in TIMDs if int(TIMD.split('-')[1]) == int(team_number)]
 
 
 def calculate_team(team_number, last_timd, is_json=False):
@@ -546,9 +546,9 @@ def calculate_team(team_number, last_timd, is_json=False):
 
     pyrebase_config = {
         "apiKey": sensitiveInfo.firebase_api_key(),
-        "authDomain": "mri2019.firebaseapp.com",
-        "databaseURL": "https://mri2019.firebaseio.com",
-        "storageBucket": "mri2019.appspot.com",
+        "authDomain": "mmr-2019.firebaseapp.com",
+        "databaseURL": "https://mmr-2019.firebaseio.com",
+        "storageBucket": "mmr-2019.appspot.com",
     }
 
     if is_json is False:
@@ -559,10 +559,10 @@ def calculate_team(team_number, last_timd, is_json=False):
         # team['sykes'] = dict(database.child("teams").child(team_number).child('sykes').get().val())
 
         # Save data in local cache
-        if not os.path.exists(os.path.join(homeDir, 'MRI-2019Server/cache/teams')):
-            os.makedirs(os.path.join(homeDir, 'MRI-2019Server/cache/teams'))
+        if not os.path.exists(os.path.join(homeDir, 'MMR-2019Server/cache/teams')):
+            os.makedirs(os.path.join(homeDir, 'MMR-2019Server/cache/teams'))
 
-        with open(os.path.join(homeDir, f'MRI-2019Server/cache/teams/{team_number}.json'), 'w') as file:
+        with open(os.path.join(homeDir, f'MMR-2019Server/cache/teams/{team_number}.json'), 'w') as file:
             json.dump(team, file)
         print(f'{team_number} cached')
 

@@ -11,9 +11,9 @@ import sensitiveInfo
 
 def get_team(team_number):
     homeDir = os.path.expanduser('~')
-    teams = os.listdir(os.path.join(homeDir, 'MRI-2019Server/cache/teams'))
+    teams = os.listdir(os.path.join(homeDir, 'MMR-2019Server/cache/teams'))
     try:
-        return [json.loads(open(os.path.join(homeDir, 'MRI-2019Server/cache/teams/', team)).read()) for team in teams if
+        return [json.loads(open(os.path.join(homeDir, 'MMR-2019Server/cache/teams/', team)).read()) for team in teams if
                 int(team.split('.')[0]) == team_number][0]
     except IndexError:
         return None

@@ -11,16 +11,16 @@ homeDir = os.path.expanduser('~')
 # Firebase setup
 pyrebase_config = {
         "apiKey": sensitiveInfo.firebase_api_key(),
-        "authDomain": "mri2019.firebaseapp.com",
-        "databaseURL": "https://mri2019.firebaseio.com",
-        "storageBucket": "mri2019.appspot.com",
+        "authDomain": "mmr-2019.firebaseapp.com",
+        "databaseURL": "https://mmr-2019.firebaseio.com",
+        "storageBucket": "mmr-2019.appspot.com",
     }
 firebase = pyrebase.initialize_app(pyrebase_config)
 database = firebase.database()
 
 # Setup for tbapy
 tba = tbapy.TBA(sensitiveInfo.tba_api_key())
-event = "2019mnri"
+event = "2019mmr"
 
 # Get a list of all qualifying matches at an event
 try:
@@ -55,10 +55,10 @@ for match in matches:
     full_assignments["QM "+str(match_num)] = assignments
 
 # Save file as json and txt
-with open(os.path.join(homeDir, 'MRI-2019Server/assignments/BackupAssignments.json'), 'w') as f:
+with open(os.path.join(homeDir, 'MMR-2019Server/assignments/BackupAssignments.json'), 'w') as f:
     json.dump(full_assignments, f)
 
-with open(os.path.join(homeDir, 'MRI-2019Server/assignments/BackupAssignments.txt'), 'w') as f:
+with open(os.path.join(homeDir, 'MMR-2019Server/assignments/BackupAssignments.txt'), 'w') as f:
     f.write(json.dumps(full_assignments))
 
 # Upload assignments to Firebase

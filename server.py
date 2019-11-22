@@ -10,9 +10,9 @@ homeDir = os.path.expanduser('~')
 
 pyrebase_config = {
         "apiKey": sensitiveInfo.firebase_api_key(),
-        "authDomain": "mri2019.firebaseapp.com",
-        "databaseURL": "https://mri2019.firebaseio.com",
-        "storageBucket": "mri2019.appspot.com",
+        "authDomain": "mmr-2019.firebaseapp.com",
+        "databaseURL": "https://mmr-2019.firebaseio.com",
+        "storageBucket": "mmr-2019.appspot.com",
     }
 
 firebase = pyrebase.initialize_app(pyrebase_config)
@@ -27,7 +27,7 @@ def reset_timds():
 
 def get_num_timds_for_match(match_number):
     homeDir = os.path.expanduser('~')
-    timds = os.listdir(os.path.join(homeDir, 'MRI-2019Server/cache/TIMDs'))
+    timds = os.listdir(os.path.join(homeDir, 'MMR-2019Server/cache/TIMDs'))
     return len([timd for timd in timds if timd.split('-')[0] == match_number])
 
 
@@ -76,7 +76,7 @@ def run_server_comp():
                         export.upload_to_drive(" Post QM" + str(current_unfinished_match) + "Full Export")
                         print("Data uploaded to Drive\n")
                         slack_client.chat_postMessage(
-                            channel="UC3TC3PN3",
+                            channel="U7DRM00FJ",
                             text="All TIMDs for Match " + str(current_unfinished_match) + "processed and data exported"
                         )
                         current_unfinished_match += 1
@@ -84,7 +84,7 @@ def run_server_comp():
                 elif match_num > current_unfinished_match:
                     print("WARNING: MISSING TIMD FOR MATCH " + str(current_unfinished_match))
                     slack_client.chat_postMessage(
-                        channel="UC3TC3PN3",
+                        channel="U7DRM00FJ",
                         text="WARNING: TIMD for Match " + str(match_num) + " uploaded before Match " +
                              str(current_unfinished_match) + " had 6 TIMDs!"
                     )
@@ -101,7 +101,7 @@ def run_server_comp():
                         export.upload_to_drive(" Post QM" + str(match_num) + "Full Export")
                         print("Data uploaded to Drive\n")
                         slack_client.chat_postMessage(
-                            channel="UC3TC3PN3",
+                            channel="U7DRM00FJ",
                             text="All TIMDs for Match " + str(match_num) + "processed and data exported"
                         )
                     elif get_num_timds_for_match("QM" + str(match_num)) > 6:
